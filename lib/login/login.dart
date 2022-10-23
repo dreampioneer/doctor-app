@@ -1,11 +1,10 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/api/api.dart';
+import 'package:doctor/signup/signup.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -13,8 +12,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login>{
   bool _isLoading = false;
-  bool _isFieldEmailValid = true;
-  bool _isFieldPasswordValid = true;
+  bool _isFieldEmailValid = false;
+  bool _isFieldPasswordValid = false;
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
@@ -87,13 +86,12 @@ class _LoginState extends State<Login>{
                     ),
                     onPressed: () {
                       setState(() => _isLoading = true);
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SignUpScreen(),
-                      //   ),
-                      // ),
-                      print("register");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Signup(),
+                        ),
+                      );
                     },
                   ),
                 )
