@@ -1,16 +1,17 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/api/api.dart';
 
-class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key, required this.title}) : super(key: key);
+class Login extends StatefulWidget {
+  const Login({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
+  State<Login> createState() => _LoginState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen>{
+class _LoginState extends State<Login>{
   bool _isLoading = false;
   bool _isFieldEmailValid = true;
   bool _isFieldPasswordValid = true;
@@ -65,7 +66,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                       _apiService.login(email, password).then((response) {
                         print(response["status"]);
                         if(response["status"] == "success"){
-
+                          final storage = FlutterSecureStorage();
+                          storage.write(key: 'jwt', value: response["token"]);
                         }
                         if(response["status"] == "error"){
 

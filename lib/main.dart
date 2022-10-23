@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:doctor/welcome/welcome_screen.dart';
+import 'package:doctor/login/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const WelcomeScreen(title: 'My First Flutter',),
+      home: const Login(title: 'My First Flutter',),
     );
   }
 }
