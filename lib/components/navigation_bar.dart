@@ -81,6 +81,29 @@ class _NavbarState extends State<Navbar>{
             );
           },
         ),
+        ListTile(
+          title: const Text(
+              "Change Password"
+          ),
+          selected: widget.title == "Change Password",
+          leading: const Icon(Icons.favorite),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Profile(title: "Change Password"),
+              ),
+            );
+          },
+        ),
+        ListTile(
+          title: const Text(
+              "Logout"
+          ),
+          leading: const Icon(Icons.favorite),
+          onTap: () {
+          },
+        ),
       ],
     );
     return Drawer(

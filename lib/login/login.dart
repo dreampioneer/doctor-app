@@ -97,7 +97,7 @@ class _LoginState extends State<Login>{
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                         if(response["status"] == "error"){
-
+                          print('error');
                         }
                       });
                     },

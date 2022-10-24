@@ -1,3 +1,4 @@
+import 'package:doctor/patient/patient.dart';
 import 'package:doctor/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/login/login.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const Login(),
+      home: const Patient(title: 'Patients',),
     );
   }
 }
