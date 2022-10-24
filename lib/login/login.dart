@@ -1,7 +1,14 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:convert';
+
+import 'package:doctor/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/api/api.dart';
 import 'package:doctor/signup/signup.dart';
+
+import '../api/storage.dart';
+import '../main.dart';
+import '../model/storage_item.dart';
+import '../storeage/storeage.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -18,6 +25,7 @@ class _LoginState extends State<Login>{
   final TextEditingController _controllerPassword = TextEditingController();
 
   ApiService _apiService = ApiService();
+  StorageService _storageService = StorageService();
 
   @override
   void initState() {
@@ -62,11 +70,30 @@ class _LoginState extends State<Login>{
                       setState(() => _isLoading = true);
                       String email = _controllerEmail.text;
                       String password = _controllerPassword.text;
-                      _apiService.login(email, password).then((response) {
-                        print(response["status"]);
+                      _apiService.login(email, password).then((response) async {
                         if(response["status"] == "success"){
-                          final storage = FlutterSecureStorage();
-                          storage.write(key: 'jwt', value: response["token"]);
+                          final StorageItem storageItem = StorageItem( "token", response["token"]);
+                          _storageService.writeSecureData(storageItem).then((value) => {
+                          });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Profile(title: 'About me',),
+                            ),
+                          );
+                          final snackBar = SnackBar(
+                            content: const Text('Login Successfully!'),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {
+                                // Some code to undo the change.
+                              },
+                            ),
+                          );
+
+                          // Find the ScaffoldMessenger in the widget tree
+                          // and use it to show a SnackBar.
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                         if(response["status"] == "error"){
 

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:doctor/model/signup.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/api/api.dart';
 import 'package:doctor/login/login.dart';
