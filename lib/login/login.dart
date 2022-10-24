@@ -72,13 +72,14 @@ class _LoginState extends State<Login>{
                       String password = _controllerPassword.text;
                       _apiService.login(email, password).then((response) async {
                         if(response["status"] == "success"){
+                          print(response["token"]);
                           final StorageItem storageItem = StorageItem( "token", response["token"]);
                           _storageService.writeSecureData(storageItem).then((value) => {
                           });
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Profile(title: 'About me',),
+                              builder: (context) => const Profile(title: 'About me',),
                             ),
                           );
                           final snackBar = SnackBar(
