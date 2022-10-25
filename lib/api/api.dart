@@ -7,11 +7,25 @@ import 'dart:convert';
 import 'package:doctor/model/signup.dart';
 import 'dart:io' as Io;
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class ApiService {
   final String baseUrl = "http://10.10.11.226:8000";
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late String token = "";
 
-  StorageService _storageService = StorageService();
+  void initState() {
+    token = "";
+  }
+
+  Future<void> setToken(token) async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setString('token', "Token " + token);
+  }
+  getToken() async{
+    final SharedPreferences prefs = await _prefs;
+    return prefs.getString('token') ?? "";
+  }
 
   Future<Map<String, dynamic>> login(email, password) async {
     final response = await http.post(
@@ -24,6 +38,7 @@ class ApiService {
     );
     Map<String, dynamic> result;
     if(response.statusCode == 200){
+      await setToken(jsonDecode(response.body)["token"]);
       result =  {'status': "success", 'token': jsonDecode(response.body)["token"]};
       return result;
     }else{
@@ -84,10 +99,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> getProfile() async {
-    _storageService.readSecureData("token").then((value) => {
-      print(value),
-      token = "Token" + value,
-    });
+    token = await getToken();
     final response = await http.get(
       Uri.parse("$baseUrl/api/user/me/"),
       headers: {
@@ -106,6 +118,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> changePassword(oldPassword, newPassword, newPasswordConfirm)async {
+    token = await getToken();
     final response = await http.put(
       Uri.parse("$baseUrl/api/user/changepwd/"),
       headers: {
@@ -129,6 +142,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> saveProfile(ProfileForm data) async{
+    token = await getToken();
     final response = await http.patch(
       Uri.parse("$baseUrl/api/user/me/"),
       headers: {
@@ -137,9 +151,6 @@ class ApiService {
       },
       body: ProfileFormToJson(data),
     );
-    print("===============");
-    print(response.body);
-    print("===============");
     Map<String, dynamic> result;
     if(response.statusCode == 200){
       result = {'status': "success"};
@@ -150,7 +161,8 @@ class ApiService {
     }
   }
 
-  Future<List<PatientForm>?> getPatients()async{
+  Future<List<PatientForm>?> getPatients() async{
+    token = await getToken();
     final response = await http.get(
       Uri.parse("$baseUrl/api/patients/patientss/"),
       headers: {
@@ -166,6 +178,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> getPatient(id)async{
+    token = await getToken();
     final response = await http.get(
       Uri.parse("$baseUrl/api/patients/patientss/$id"),
       headers: {
@@ -184,6 +197,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> addPatient(PatientForm data)async{
+    token = await getToken();
     final response = await http.post(
       Uri.parse("$baseUrl/api/patients/patientss/"),
       headers: {
@@ -192,9 +206,6 @@ class ApiService {
       },
       body: PatientFormToJson(data),
     );
-    print("=================");
-    print(response.body);
-    print("=================");
     Map<String, dynamic> result;
     if(response.statusCode == 201){
       result = {'status': "success", 'id': jsonDecode(response.body)["id"]};
@@ -207,6 +218,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> updatePatient(id, PatientForm data)async{
+    token = await getToken();
     final response = await http.put(
       Uri.parse("$baseUrl/api/patients/patientss/$id/"),
       headers: {
@@ -227,6 +239,7 @@ class ApiService {
   }
 
   Future<bool> deletePatient(id)async{
+    token = await getToken();
     final response = await http.delete(
       Uri.parse("$baseUrl/api/patients/all/$id/"),
       headers: {
@@ -244,6 +257,7 @@ class ApiService {
   }
 
   Future<bool> uploadImageFiles(data, id)async {
+    token = await getToken();
       final uri = Uri.parse("$baseUrl/api/patients/patientss/$id/upload-image/");
       for (var index = 0; index < data.length; index++) {
         var request = http.MultipartRequest('POST', uri);
