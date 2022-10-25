@@ -23,15 +23,6 @@ class _NavbarState extends State<Navbar>{
   @override
   void initState(){
     super.initState();
-    _storageService.readSecureData("token").then((value) => {
-      print("In"),
-      print(value),
-      this.token = value!,
-      print("Intoken"),
-      print(this.token),
-    });
-    print("Out");
-    print(this.token);
   }
 
   @override
@@ -40,7 +31,7 @@ class _NavbarState extends State<Navbar>{
     print(this.token);
     final drawerHeader = UserAccountsDrawerHeader(
       accountName: Text(
-          this.token
+          "test"
       ),
       accountEmail: const Text(
           "test"

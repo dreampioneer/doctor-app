@@ -9,8 +9,9 @@ class StorageService {
         key: newItem.key, value: newItem.value);
   }
 
-  Future<String?> readSecureData(String key) async {
+  Future<String> readSecureData(String key) async {
     var readData = await _secureStorage.read(key: key);
+    readData = readData ?? "";
     return readData;
   }
 

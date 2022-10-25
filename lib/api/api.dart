@@ -1,3 +1,4 @@
+import 'package:doctor/api/storage.dart';
 import 'package:doctor/model/patient.dart';
 import 'package:doctor/model/profile.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +9,9 @@ import 'dart:io' as Io;
 
 class ApiService {
   final String baseUrl = "http://10.10.11.226:8000";
-  static const token = "Token b2e4f32720c5425730dd5dec0b8ed487d8a861e5";
+  late String token = "";
+
+  StorageService _storageService = StorageService();
 
   Future<Map<String, dynamic>> login(email, password) async {
     final response = await http.post(
@@ -81,6 +84,10 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> getProfile() async {
+    _storageService.readSecureData("token").then((value) => {
+      print(value),
+      token = "Token" + value,
+    });
     final response = await http.get(
       Uri.parse("$baseUrl/api/user/me/"),
       headers: {
