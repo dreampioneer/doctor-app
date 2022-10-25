@@ -26,50 +26,28 @@ class _ProfileEditState extends State<ProfileEdit> {
   final TextEditingController _controllerLastName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerDepartment = TextEditingController();
-  final TextEditingController _controllerGender = TextEditingController();
-  final TextEditingController _controllerRole = TextEditingController();
+  String _controllerGender = "Male";
+  String _controllerRole = "Doctor";
 
-  final List<Map<String, dynamic>> _genderItems = [
-    {
-      'value': 'Male',
-      'label': 'Male',
-    },
-    {
-      'value': 'Female',
-      'label': 'Female',
-    },
-    {
-      'value': 'Transgender',
-      'label': 'Transgender',
-    },
-    {
-      'value': 'Non-binary/non-conforming',
-      'label': 'Non-binary/non-conforming',
-    },
-    {
-      'value': 'Prefer not to respond',
-      'label': 'Prefer not to respond',
-    },
-  ];
+  List<DropdownMenuItem<String>> get _genderItems{
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(child: Text("Male"),value: "Male"),
+      const DropdownMenuItem(child: Text("Female"),value: "Female"),
+      const DropdownMenuItem(child: Text("Non-binary/non-conforming"),value: "Non-binary/non-conforming"),
+      const DropdownMenuItem(child: Text("Prefer not to respond"),value: "Prefer not to respond"),
+    ];
+    return menuItems;
+  }
 
-  final List<Map<String, dynamic>> _roleItems = [
-    {
-      'value': 'Doctor',
-      'label': 'Doctor',
-    },
-    {
-      'value': 'Nurse',
-      'label': 'Nurse',
-    },
-    {
-      'value': 'Transgender',
-      'label': 'Transgender',
-    },
-    {
-      'value': 'Physical Therapist',
-      'label': 'Physical Therapist',
-    },
-  ];
+  List<DropdownMenuItem<String>> get _roleItems{
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(child: Text("Doctor"),value: "Doctor"),
+      const DropdownMenuItem(child: Text("Nurse"),value: "Nurse"),
+      const DropdownMenuItem(child: Text("Transgender"),value: "Transgender"),
+      const DropdownMenuItem(child: Text("Physical Therapist"),value: "Physical Therapist"),
+    ];
+    return menuItems;
+  }
 
   ApiService _apiService = ApiService();
 
@@ -86,8 +64,8 @@ class _ProfileEditState extends State<ProfileEdit> {
       _controllerLastName.text = response["data"]["last_name"],
       _controllerEmail.text = response["data"]["email"],
       _controllerDepartment.text = response["data"]["department_id"].toString(),
-      _controllerRole.text = response["data"]["role"],
-      _controllerGender.text = response["data"]["gender"],
+      _controllerRole = response["data"]["role"],
+      _controllerGender = response["data"]["gender"],
     });
     super.initState();
   }
@@ -123,23 +101,13 @@ class _ProfileEditState extends State<ProfileEdit> {
                           ),
                         ),
                         onPressed: () {
-                          if (
-                          !_isFieldFirstNameValid ||
-                              !_isFieldLastNameValid ||
-                              !_isFieldEmailValid ||
-                              !_isFieldDepartmentValid ||
-                              !_isFieldGenderValid ||
-                              !_isFieldRoleValid
-                          ) {
-                            return;
-                          }
                           setState(() => _isLoading = true);
                           String first_name = _controllerFirstName.text;
                           String last_name = _controllerLastName.text;
                           String email = _controllerEmail.text;
                           int department_id = int.parse(_controllerDepartment.text);
-                          String gender = _controllerGender.text;
-                          String role = _controllerRole.text;
+                          String gender = _controllerGender;
+                          String role = _controllerRole;
                           ProfileForm profileForm = ProfileForm(
                               first_name: first_name,
                               last_name: last_name,
@@ -274,44 +242,62 @@ class _ProfileEditState extends State<ProfileEdit> {
   }
 
   Widget _buildSelectFieldGender() {
-    return SelectFormField(
-      controller: _controllerGender,
-      type: SelectFormFieldType.dialog, // or can be dialog
-      //initialValue: _controllerGender.text,
-      labelText: 'Gender',
-      decoration: InputDecoration(
-        labelText: "Select Gender",
-        errorText: _isFieldGenderValid
-            ? null
-            : "Gender is required",
-      ),
-      items: _genderItems,
-      onChanged: (val) => {
-        //_controllerGender.text = val,
-        _isFieldGenderValid = true,
-      },
-      onSaved: (val) => print(val),
+    return Row(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 10.0),
+            child: Text(
+              "Gender : ",
+              style: TextStyle(fontSize: 17),
+            ),
+          ),
+          DropdownButton<String>(
+            value: _controllerGender,
+            icon: const Icon(Icons.arrow_downward),
+            elevation: 16,
+            underline: Container(
+              height: 2,
+            ),
+            onChanged: (String? value) {
+              // This is called when the user selects an item.
+              setState(() {
+                _controllerGender = value!;
+              });
+            },
+            items: _genderItems,
+          )
+        ]
     );
   }
 
   Widget _buildSelectFieldRole() {
-    return SelectFormField(
-      controller: _controllerRole,
-      type: SelectFormFieldType.dialog, // or can be dialog
-      //initialValue: _controllerRole.text,
-      labelText: 'Role',
-      decoration: InputDecoration(
-        labelText: "Select Role",
-        errorText: _isFieldRoleValid
-            ? null
-            : "Role is required",
-      ),
-      items: _roleItems,
-      onChanged: (val) => {
-        //_controllerRole.text = val,
-        _isFieldRoleValid = true,
-      },
-      onSaved: (val) => print(val),
+    return Row(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 10.0),
+            child: Text(
+              "Gender : ",
+              style: TextStyle(fontSize: 17),
+            ),
+          ),
+          DropdownButton<String>(
+            value: _controllerRole,
+            icon: const Icon(Icons.arrow_downward),
+            elevation: 16,
+            underline: Container(
+              height: 2,
+            ),
+            onChanged: (String? value) {
+              // This is called when the user selects an item.
+              setState(() {
+                _controllerRole = value!;
+              });
+            },
+            items: _roleItems,
+          )
+        ]
     );
   }
+
+
 }

@@ -130,6 +130,9 @@ class ApiService {
       },
       body: ProfileFormToJson(data),
     );
+    print("===============");
+    print(response.body);
+    print("===============");
     Map<String, dynamic> result;
     if(response.statusCode == 200){
       result = {'status': "success"};
@@ -182,6 +185,9 @@ class ApiService {
       },
       body: PatientFormToJson(data),
     );
+    print("=================");
+    print(response.body);
+    print("=================");
     Map<String, dynamic> result;
     if(response.statusCode == 201){
       result = {'status': "success", 'id': jsonDecode(response.body)["id"]};

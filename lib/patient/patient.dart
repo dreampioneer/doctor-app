@@ -26,6 +26,9 @@ class _PatientState extends State<Patient> {
   ApiService _apiService = ApiService();
   @override
   void initState() {
+    setState(() {
+
+    });
     super.initState();
   }
   @override
