@@ -4,7 +4,8 @@
 
 import 'package:doctor/api/storage.dart';
 import 'package:doctor/patient/patient.dart';
-import 'package:doctor/profile/profile.dart';
+import 'package:doctor/profile/change_password.dart';
+import 'package:doctor/profile/profileEdit.dart';
 import 'package:flutter/material.dart';
 
 class Navbar extends StatefulWidget {
@@ -76,7 +77,7 @@ class _NavbarState extends State<Navbar>{
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Profile(title: "About me"),
+                builder: (context) => const ProfileEdit(title: "About me"),
               ),
             );
           },
@@ -91,7 +92,7 @@ class _NavbarState extends State<Navbar>{
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Profile(title: "Change Password"),
+                builder: (context) => const ChangePassword(title: "Change Password"),
               ),
             );
           },

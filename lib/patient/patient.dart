@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:doctor/components/navigation_bar.dart';
+import 'package:doctor/model/patient.dart';
 import 'package:doctor/patient/add.dart';
 import 'package:doctor/patient/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
+import '../api/api.dart';
+import 'edit.dart';
 
 class Patient extends StatefulWidget {
   const Patient({Key? key, required this.title}) : super(key: key);
@@ -14,7 +21,13 @@ class Patient extends StatefulWidget {
 }
 
 class _PatientState extends State<Patient> {
+  late BuildContext context;
 
+  ApiService _apiService = ApiService();
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,70 +37,22 @@ class _PatientState extends State<Patient> {
           ),
         ),
         body: Scrollbar(
-          child: ListView(
-            restorationId: 'list_demo_list_view',
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            children: [
-              for (int index = 1; index < 21; index++)
-                ListTile(
-                  onTap: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ViewPatient(title: 'View Patient'),
-                      ),
-                    ),
-                  },
-                  focusColor: const Color(0xff764abc),
-                  hoverColor: const Color(0xff764abc),
-                  selectedTileColor: const Color(0xff764abc),
-                  leading: CircleAvatar(
-                    backgroundColor: const Color(0xff764abc),
-                    foregroundColor: const Color(0xffffffff),
-                    child: Text(index.toString()),
-                  ),
-                  title: const Text(
-                    'Fabric Softener',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 20.0),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(
-                          Icons.favorite_border,
-                          size: 20.0,
-                          color: Colors.brown[900],
-                        ),
-                          onPressed: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const AddPatient(title: 'Edit Patient'),
-                              ),
-                            ),
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete_outline,
-                          size: 20.0,
-                          color: Colors.brown[900],
-                        ),
-                        onPressed: () {
-                          //   _onDeleteItemPressed(index);
-                        },
-                      ),
-                    ],
-                  ),
-                  // style: ListTileStyle(
-                  //     border: 2px,
-                  //   )
-                ),
-            ],
+          child:FutureBuilder(
+            future: _apiService.getPatients(),
+            builder: (BuildContext context, AsyncSnapshot<List<PatientForm>?> snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Something wrong with message: ${snapshot.error.toString()}"),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                List<PatientForm>? patients = snapshot.data;
+                return _buildListView(patients!);
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -103,6 +68,124 @@ class _PatientState extends State<Patient> {
           child: const Icon(Icons.add),
         ),
         drawer:  Navbar(title: widget.title)
+    );
+  }
+
+  Widget _buildListView(List<PatientForm> patients) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: ListView.builder(
+      itemBuilder: (context, index) {
+          PatientForm patient = patients[index];
+          return ListTile(
+            onTap: () =>
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ViewPatient(title: 'View Patient', patient: patient),
+                ),
+              ),
+            },
+            leading: CircleAvatar(
+              backgroundColor: const Color(0xff764abc),
+              foregroundColor: const Color(0xffffffff),
+              child: Text(
+                  patient.first_name.substring(0, 1).toUpperCase() +
+                  patient.last_name.substring(0, 1).toUpperCase()
+              ),
+            ),
+            title: Text(
+              patient.first_name + " " + patient.last_name,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 20.0),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.border_color,
+                    size: 20.0,
+                    color: Colors.brown[900],
+                  ),
+                  onPressed: () =>
+                  {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditPatient(title: 'Edit Patient', patient: patient),
+                      ),
+                    ),
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.delete_outline,
+                    size: 20.0,
+                    color: Colors.brown[900],
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text("Warning"),
+                            content: const Text("Are you sure want to delete this data"),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text("Yes"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  _apiService.deletePatient(patient.id).then((response) {
+                                    if (response) {
+                                      setState(() {});
+                                      final snackBar = SnackBar(
+                                        content: const Text('Delete data Successfully!'),
+                                        action: SnackBarAction(
+                                          label: 'Undo',
+                                          onPressed: () {
+                                            // Some code to undo the change.
+                                          },
+                                        ),
+                                      );
+                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    } else {
+                                      final snackBar = SnackBar(
+                                        content: const Text('Fail!'),
+                                        action: SnackBarAction(
+                                          label: 'Undo',
+                                          onPressed: () {
+                                            // Some code to undo the change.
+                                          },
+                                        ),
+                                      );
+                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    }
+                                  });
+                                },
+                              ),
+                              TextButton(
+                                child: const Text("No"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              )
+                            ],
+                          );
+                        });
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+        itemCount: patients.length,
+      ),
+
     );
   }
 }

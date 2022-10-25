@@ -6,14 +6,14 @@ import 'package:doctor/model/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:select_form_field/select_form_field.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({Key? key, required this.title}) : super(key: key);
+class ProfileEdit extends StatefulWidget {
+  const ProfileEdit({Key? key, required this.title}) : super(key: key);
   final String title;
   @override
-  State<Profile> createState() => _ProfileState();
+  State<ProfileEdit> createState() => _ProfileEditState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileEditState extends State<ProfileEdit> {
   bool _isLoading = false;
   bool _isFieldFirstNameValid = false;
   bool _isFieldLastNameValid = false;

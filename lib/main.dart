@@ -1,5 +1,5 @@
 import 'package:doctor/patient/patient.dart';
-import 'package:doctor/profile/profile.dart';
+import 'package:doctor/profile/profileEdit.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/login/login.dart';
 

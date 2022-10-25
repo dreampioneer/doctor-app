@@ -1,11 +1,15 @@
+import 'package:doctor/model/patient.dart';
 import 'package:doctor/model/profile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:doctor/model/signup.dart';
+import 'dart:io' as Io;
 
 class ApiService {
   final String baseUrl = "http://10.10.11.226:8000";
   static const token = "Token b2e4f32720c5425730dd5dec0b8ed487d8a861e5";
+
   Future<Map<String, dynamic>> login(email, password) async {
     final response = await http.post(
       Uri.parse("$baseUrl/api/user/token/"),
@@ -58,6 +62,30 @@ class ApiService {
       return result;
     }
   }
+
+  Future<Map<String, dynamic>> changePassword(oldPassword, newPassword, newPasswordConfirm)async {
+    final response = await http.put(
+      Uri.parse("$baseUrl/api/user/changepwd/"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      },
+      body: jsonEncode({
+        'old_password': oldPassword,
+        'new_password': newPassword,
+        'new_password_confirm': newPasswordConfirm,
+      }),
+    );
+    Map<String, dynamic> result;
+    if(response.statusCode == 200){
+      result = {'status': "success",'data': jsonDecode(response.body)};
+      return result;
+    }else{
+      result = {'status': "error","message":jsonDecode(response.body)};
+      return result;
+    }
+  }
+
   Future<Map<String, dynamic>> saveProfile(ProfileForm data) async{
     final response = await http.patch(
       Uri.parse("$baseUrl/api/user/me/"),
@@ -68,8 +96,6 @@ class ApiService {
       body: ProfileFormToJson(data),
     );
     Map<String, dynamic> result;
-    print(ProfileFormToJson(data));
-    print(jsonEncode(response.body));
     if(response.statusCode == 200){
       result = {'status': "success"};
       return result;
@@ -77,5 +103,116 @@ class ApiService {
       result = {'status': "error","message":response.body};
       return result;
     }
+  }
+
+  Future<List<PatientForm>?> getPatients()async{
+    final response = await http.get(
+      Uri.parse("$baseUrl/api/patients/patientss/"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      },
+    );
+    if(response.statusCode == 200){
+      return PatientFormFromJson(response.body);
+    }else{
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>> getPatient(id)async{
+    final response = await http.get(
+      Uri.parse("$baseUrl/api/patients/patientss/$id"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      },
+    );
+    Map<String, dynamic> result;
+    if(response.statusCode == 200){
+      result = {'status': "success",'data': jsonDecode(response.body)};
+      return result;
+    }else{
+      result = {'status': "error","message":jsonDecode(response.body)};
+      return result;
+    }
+  }
+
+  Future<Map<String, dynamic>> addPatient(PatientForm data)async{
+    final response = await http.post(
+      Uri.parse("$baseUrl/api/patients/patientss/"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      },
+      body: PatientFormToJson(data),
+    );
+    Map<String, dynamic> result;
+    if(response.statusCode == 201){
+      result = {'status': "success", 'id': jsonDecode(response.body)["id"]};
+      print(jsonDecode(response.body)["id"]);
+      return result;
+    }else{
+      result = {'status': "error", 'message': jsonDecode(response.body)};
+      return result;
+    }
+  }
+
+  Future<Map<String, dynamic>> updatePatient(id, PatientForm data)async{
+    final response = await http.put(
+      Uri.parse("$baseUrl/api/patients/patientss/$id/"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      },
+      body: PatientFormToJson(data),
+    );
+    Map<String, dynamic> result;
+    if(response.statusCode == 200){
+      result = {'status': "success", 'id': jsonDecode(response.body)["id"]};
+      print(jsonDecode(response.body)["id"]);
+      return result;
+    }else{
+      result = {'status': "error", 'message': jsonDecode(response.body)};
+      return result;
+    }
+  }
+
+  Future<bool> deletePatient(id)async{
+    final response = await http.delete(
+      Uri.parse("$baseUrl/api/patients/all/$id/"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      },
+    );
+    debugPrint(jsonEncode(response.statusCode));
+    debugPrint(jsonEncode(response.body));
+    if(response.statusCode == 204){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  Future<bool> uploadImageFiles(data, id)async {
+      final uri = Uri.parse("$baseUrl/api/patients/patientss/$id/upload-image/");
+      for (var index = 0; index < data.length; index++) {
+        var request = http.MultipartRequest('POST', uri);
+        var headers = {
+          'Authorization': token
+        };
+        request.headers.addAll(headers);
+        request.files.add(await http.MultipartFile(
+            'image_lists',
+            Io.File(data[index].path).readAsBytes().asStream(),
+            Io.File(data[index].path).lengthSync(),
+            filename: data[index].path
+                .split("/")
+                .last
+        ));
+        var response = await request.send();
+      }
+      return true;
   }
 }
