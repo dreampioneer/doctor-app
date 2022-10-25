@@ -45,6 +45,41 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>> emailVerify(email) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/api/user/emailverify/"),
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      body: jsonEncode({'email': email}),
+    );
+    Map<String, dynamic> result;
+    if(response.statusCode == 201){
+      result = {'status': "success","data":jsonDecode(response.body)};
+      return result;
+    }else{
+
+      result = {'status': "error","message":jsonDecode(response.body)};
+      return result;
+    }
+  }
+
+  Future<Map<String, dynamic>> emailTokenVerify(email_token) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/api/user/email/verify/$email_token"),
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
+    );
+    print("==========================");
+    print(response.statusCode);
+    print("==========================");
+    Map<String, dynamic> result;
+    if(response.statusCode == 200){
+      result = {'status': "success","data":jsonDecode(response.body)};
+      return result;
+    }else{
+      result = {'status': "error","message":jsonDecode(response.body)};
+      return result;
+    }
+  }
+
   Future<Map<String, dynamic>> getProfile() async {
     final response = await http.get(
       Uri.parse("$baseUrl/api/user/me/"),

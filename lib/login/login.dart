@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:doctor/patient/patient.dart';
 import 'package:doctor/profile/profileEdit.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/api/api.dart';
@@ -79,7 +80,7 @@ class _LoginState extends State<Login>{
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ProfileEdit(title: 'About me',),
+                              builder: (context) => const Patient(title: 'Patients'),
                             ),
                           );
                           final snackBar = SnackBar(

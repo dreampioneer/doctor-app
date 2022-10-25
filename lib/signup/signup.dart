@@ -151,14 +151,59 @@ class _SignupState extends State<Signup> {
                           role: role
                         );
                         _apiService.signup(signupForm).then((response) {
-                          print(jsonEncode(response));
                           if(response["status"] == "success"){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Login(),
-                              ),
-                            );
+                            _apiService.emailVerify(email).then((response){
+                              if(response["status"] == "success" && response["data"]["status"]){
+                                _apiService.emailTokenVerify(response["data"]["email_token"]).then((response){
+                                  if(response["status"] == "success" && response["data"]["status"]){
+                                    print("==========================");
+                                    print("Email Verify Successfully!");
+                                    print("==========================");
+                                    final snackBar = SnackBar(
+                                      content: const Text('Email Verify Successfully!'),
+                                      action: SnackBarAction(
+                                        label: 'Undo',
+                                        onPressed: () {
+                                          // Some code to undo the change.
+                                        },
+                                      ),
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Login(),
+                                      ),
+                                    );
+                                  }else{
+                                    print("==========================");
+                                    print("Email Verify fail!");
+                                    print("==========================");
+                                    final snackBar = SnackBar(
+                                      content: const Text('Email Verify Fail!'),
+                                      action: SnackBarAction(
+                                        label: 'Undo',
+                                        onPressed: () {
+                                          // Some code to undo the change.
+                                        },
+                                      ),
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  }
+                                });
+                              }else{
+                                final snackBar = SnackBar(
+                                  content: const Text('Email Verify Fail!'),
+                                  action: SnackBarAction(
+                                    label: 'Undo',
+                                    onPressed: () {
+                                      // Some code to undo the change.
+                                    },
+                                  ),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              }
+                            });
                             final snackBar = SnackBar(
                               content: const Text('Sign Up Successfully!'),
                               action: SnackBarAction(
