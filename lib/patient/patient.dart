@@ -83,12 +83,15 @@ class _PatientState extends State<Patient> {
           return ListTile(
             onTap: () =>
             {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ViewPatient(title: 'View Patient', patient: patient),
-                ),
-              ),
+              _apiService.getPatient(patient.id).then((response){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ViewPatient(title: 'View Patient', patient: response),
+                  ),
+                );
+              }),
             },
             leading: CircleAvatar(
               backgroundColor: const Color(0xff764abc),
