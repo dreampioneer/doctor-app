@@ -106,16 +106,6 @@ class _AddPatientState extends State<AddPatient> {
     }
   }
 
-  // chooseCamera() async {
-  //   final choosedimage = await imgpicker.pickImage(source: ImageSource.camera);
-  //   if(choosedimage != null){
-  //     setState(() {
-  //       flag = true;
-  //       image = choosedimage as XFile;
-  //     });
-  //   }
-  // }
-
   //Tags
   late double _distanceToField;
 
@@ -209,23 +199,14 @@ class _AddPatientState extends State<AddPatient> {
                             label: Text(
                                 multiFlag ? "Change Image files" : "Open Image files"
                             ),
-                          ),
-                            FloatingActionButton.extended(
-                              onPressed: () {
-                                //chooseCameras();
-                              },
-                              label: const Text(
-                                  "Take a picture"
-                              ),
-                            )
-                          ]
+                          ),]
                       )
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: FloatingActionButton.extended(
                       label: Text(
-                        "save".toUpperCase(),
+                        "Create".toUpperCase(),
                         style: const TextStyle(
                           color: Colors.white,
                         ),

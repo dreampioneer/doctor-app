@@ -186,6 +186,7 @@ class ApiService {
         'Authorization': token
       },
     );
+    print(response.body);
     Map<String, dynamic> result;
     if(response.statusCode == 200){
       result = {'status': "success",'data': jsonDecode(response.body)};

@@ -219,7 +219,16 @@ class _SignupState extends State<Signup> {
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           }
                           if(response["status"] == "error"){
-
+                            final snackBar = SnackBar(
+                              content: const Text('Your information is wrong!'),
+                              action: SnackBarAction(
+                                label: 'Undo',
+                                onPressed: () {
+                                  // Some code to undo the change.
+                                },
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           }
                         });
                       },

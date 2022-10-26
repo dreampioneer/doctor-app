@@ -29,7 +29,7 @@ class _EditPatientState extends State<EditPatient> {
   final TextEditingController _controllerLink = TextEditingController();
   final TextEditingController _controllerImage = TextEditingController();
   final TextEditingController _controllerPhoneNumber = TextEditingController();
-  final TextEditingController _controllerDateOfBirth = TextEditingController();
+  late String _controllerDateOfBirth = "2000-08-01";
   final TextEditingController _controllerStreetAddress = TextEditingController();
   final TextEditingController _controllerCityAddress = TextEditingController();
   final TextEditingController _controllerZipcodeAddress = TextEditingController();
@@ -44,8 +44,8 @@ class _EditPatientState extends State<EditPatient> {
   late TextfieldTagsController _controllerTags = TextfieldTagsController();
   late TextfieldTagsController _controllerImageLists = TextfieldTagsController();
 
-  List<String> _controllerInitTags = [];
-  List<String> _controllerInitTreatment = [];
+  List<String> _controllerInitTags = ["Tag"];
+  List<String> _controllerInitTreatment = ["Treetment"];
 
   late String _messageFirstName = "";
   late String _messageLastName = "";
@@ -155,9 +155,12 @@ class _EditPatientState extends State<EditPatient> {
       _controllerAge.text = response["data"]["age"].toString(),
       _controllerImage.text = response["data"]["image"] ?? "",
       _controllerPhoneNumber.text = response["data"]["phone_number"] ?? "",
-      _controllerDateOfBirth.text = response["data"]["date_of_birth"].toString(),
+      _controllerDateOfBirth = response["data"]["date_of_birth"].toString(),
+      setState(() {
+        _controllerDateOfBirth = response["data"]["date_of_birth"].toString();
+      }),
       print("=================="),
-      print(_controllerDateOfBirth.text),
+      print(_controllerDateOfBirth),
       print("=================="),
       _controllerStreetAddress.text = response["data"]["street_address"] ?? "",
       _controllerCityAddress.text = response["data"]["city_address"]  ?? "",
@@ -172,20 +175,29 @@ class _EditPatientState extends State<EditPatient> {
       for(var index = 0; index < response["data"]["tags"].length; index++){
         _controllerInitTags.add(response["data"]["tags"][index]["name"].toString()),
       },
-      _controllerInitTags = ["bbb"],
+      print("=================="),
+      print(response["data"]["tags"]),
+      print(_controllerInitTags),
+      print("=================="),
       for(var index = 0; index < response["data"]["treatment"].length; index++){
         _controllerInitTreatment.add(response["data"]["treatment"][index]["name"].toString()),
       },
     });
-
+  setState(() {
+    _controllerDateOfBirth = _controllerDateOfBirth;
+  });
     super.initState();
-    _controllerTags = TextfieldTagsController();
-    _controllerTreatment = TextfieldTagsController();
-    _controllerImageLists = TextfieldTagsController();
+
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    _apiService.getPatient(widget.patient.id).then((response) => {
+      _controllerDateOfBirth = response["data"]["date_of_birth"].toString(),
+    });
+    print("=========aa=========");
+    print(_controllerDateOfBirth);
+    print("=========aa=========");
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -206,11 +218,11 @@ class _EditPatientState extends State<EditPatient> {
                   _buildTextFieldLink(),
                   _buildTextFieldPhoneNumber(),
                   DateTimePicker(
-                    initialValue: _controllerDateOfBirth.text,
+                    initialValue: _controllerDateOfBirth,
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
                     dateLabelText: 'Date Of Birth',
-                    onChanged: (val) => {_controllerDateOfBirth.text = val},
+                    onChanged: (val) => {_controllerDateOfBirth = val},
                     validator: (val) {},
                     onSaved: (val) {},
                   ),
@@ -298,7 +310,7 @@ class _EditPatientState extends State<EditPatient> {
                           age: _controllerAge.text,
                           link: _controllerLink.text,
                           phone_number: _controllerPhoneNumber.text,
-                          date_of_birth: _controllerDateOfBirth.text,
+                          date_of_birth: _controllerDateOfBirth,
                           street_address: _controllerStreetAddress.text,
                           city_address: _controllerCityAddress.text,
                           zipcode_address: _controllerZipcodeAddress.text,

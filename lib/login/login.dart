@@ -95,7 +95,16 @@ class _LoginState extends State<Login>{
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                         if(response["status"] == "error"){
-                          print('error');
+                          final snackBar = SnackBar(
+                            content: const Text('Your credentials is wrong!'),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {
+                                // Some code to undo the change.
+                              },
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       });
                     },
@@ -124,22 +133,6 @@ class _LoginState extends State<Login>{
               ],
             ),
           ),
-          // _isLoading
-          //     ? Stack(
-          //   children: [
-          //     const Opacity(
-          //       opacity: 0.3,
-          //       child: const ModalBarrier(
-          //         dismissible: false,
-          //         color: Colors.grey,
-          //       ),
-          //     ),
-          //     const Center(
-          //       child: const CircularProgressIndicator(),
-          //     ),
-          //   ],
-          // )
-          //     : Container(),
         ],
       ),
     );
