@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:doctor/api/api.dart';
 import 'package:doctor/api/storage.dart';
 import 'package:doctor/patient/patient.dart';
 import 'package:doctor/profile/change_password.dart';
@@ -18,7 +19,7 @@ class Navbar extends StatefulWidget {
 
 class _NavbarState extends State<Navbar>{
   String token = "";
-  StorageService _storageService = StorageService();
+  ApiService _apiService = ApiService();
 
   @override
   void initState(){
@@ -27,8 +28,6 @@ class _NavbarState extends State<Navbar>{
 
   @override
   Widget build(BuildContext context) {
-    print("build");
-    print(this.token);
     final drawerHeader = UserAccountsDrawerHeader(
       accountName: Text(
           "test"
@@ -65,12 +64,14 @@ class _NavbarState extends State<Navbar>{
           selected: widget.title == "About me",
           leading: const Icon(Icons.favorite),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ProfileEdit(title: "About me"),
-              ),
-            );
+            _apiService.getProfile().then((response) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileEdit(title: "About me", profile: response),
+                ),
+              );
+            });
           },
         ),
         ListTile(

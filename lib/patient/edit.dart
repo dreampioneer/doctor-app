@@ -13,7 +13,7 @@ class EditPatient extends StatefulWidget {
   const EditPatient({Key? key, required this.title, required this.patient}) : super(key: key);
 
   final String title;
-  final PatientForm patient;
+  final dynamic patient;
 
   @override
   State<EditPatient> createState() => _EditPatientState();
@@ -44,8 +44,8 @@ class _EditPatientState extends State<EditPatient> {
   late TextfieldTagsController _controllerTags = TextfieldTagsController();
   late TextfieldTagsController _controllerImageLists = TextfieldTagsController();
 
-  List<String> _controllerInitTags = ["Tag"];
-  List<String> _controllerInitTreatment = ["Treetment"];
+  List<String> _controllerInitTags = [];
+  List<String> _controllerInitTreatment = [];
 
   late String _messageFirstName = "";
   late String _messageLastName = "";
@@ -146,55 +146,37 @@ class _EditPatientState extends State<EditPatient> {
 
   @override
   void initState() {
-    _apiService.getPatient(widget.patient.id).then((response) => {
-      _controllerFirstName.text = response["data"]["first_name"] ?? "",
-      _controllerLastName.text = response["data"]["last_name"] ?? "",
-      _controllerDescription.text = response["data"]["description"] ?? "",
-      _controllerMedList.text = response["data"]["med_list"] ?? "",
-      _controllerLink.text = response["data"]["link"] ?? "",
-      _controllerAge.text = response["data"]["age"].toString(),
-      _controllerImage.text = response["data"]["image"] ?? "",
-      _controllerPhoneNumber.text = response["data"]["phone_number"] ?? "",
-      _controllerDateOfBirth = response["data"]["date_of_birth"].toString(),
-      setState(() {
-        _controllerDateOfBirth = response["data"]["date_of_birth"].toString();
-      }),
-      print("=================="),
-      print(_controllerDateOfBirth),
-      print("=================="),
-      _controllerStreetAddress.text = response["data"]["street_address"] ?? "",
-      _controllerCityAddress.text = response["data"]["city_address"]  ?? "",
-      _controllerZipcodeAddress.text = response["data"]["zipcode_address"] ?? "",
-      _controllerStateAddress.text = response["data"]["state_address"] ?? "",
-      _controllerGender = response["data"]["gender"] ?? "Male",
-      _controllerEmergencyContactMe.text = response["data"]["emergency_contact_name"] ?? "",
-      _controllerEmergencyPhoneNumber.text = response["data"]["emergency_phone_number"] ?? "",
-      _controllerRelationship = response["data"]["relationship"] ?? "Spouse",
-      _controllerIsInHospital = "Yes",
-      _controllerUser.text = response["data"]["user"] ?? "",
-      for(var index = 0; index < response["data"]["tags"].length; index++){
-        _controllerInitTags.add(response["data"]["tags"][index]["name"].toString()),
-      },
-      print("=================="),
-      print(response["data"]["tags"]),
-      print(_controllerInitTags),
-      print("=================="),
-      for(var index = 0; index < response["data"]["treatment"].length; index++){
-        _controllerInitTreatment.add(response["data"]["treatment"][index]["name"].toString()),
-      },
-    });
-  setState(() {
-    _controllerDateOfBirth = _controllerDateOfBirth;
-  });
+      _controllerFirstName.text = jsonDecode(widget.patient)["first_name"] ?? "";
+      _controllerLastName.text = jsonDecode(widget.patient)["last_name"] ?? "";
+      _controllerDescription.text = jsonDecode(widget.patient)["description"] ?? "";
+      _controllerMedList.text = jsonDecode(widget.patient)["med_list"] ?? "";
+      _controllerLink.text = jsonDecode(widget.patient)["link"] ?? "";
+      _controllerAge.text = jsonDecode(widget.patient)["age"].toString();
+      _controllerImage.text = jsonDecode(widget.patient)["image"] ?? "";
+      _controllerPhoneNumber.text = jsonDecode(widget.patient)["phone_number"] ?? "";
+      _controllerDateOfBirth = jsonDecode(widget.patient)["date_of_birth"].toString();
+      _controllerStreetAddress.text = jsonDecode(widget.patient)["street_address"] ?? "";
+      _controllerCityAddress.text = jsonDecode(widget.patient)["city_address"]  ?? "";
+      _controllerZipcodeAddress.text = jsonDecode(widget.patient)["zipcode_address"] ?? "";
+      _controllerStateAddress.text = jsonDecode(widget.patient)["state_address"] ?? "";
+      _controllerGender = jsonDecode(widget.patient)["gender"] ?? "Male";
+      _controllerEmergencyContactMe.text = jsonDecode(widget.patient)["emergency_contact_name"] ?? "";
+      _controllerEmergencyPhoneNumber.text = jsonDecode(widget.patient)["emergency_phone_number"] ?? "";
+      _controllerRelationship = jsonDecode(widget.patient)["relationship"] ?? "Spouse";
+      _controllerIsInHospital = "Yes";
+      _controllerUser.text = jsonDecode(widget.patient)["user"] ?? "";
+      for(var index = 0; index < jsonDecode(widget.patient)["tags"].length; index++){
+        _controllerInitTags.add(jsonDecode(widget.patient)["tags"][index]["name"].toString());
+      };
+      for(var index = 0; index < jsonDecode(widget.patient)["treatment"].length; index++){
+        _controllerInitTreatment.add(jsonDecode(widget.patient)["treatment"][index]["name"].toString());
+      };
     super.initState();
 
   }
 
   @override
   Widget build(BuildContext context){
-    _apiService.getPatient(widget.patient.id).then((response) => {
-      _controllerDateOfBirth = response["data"]["date_of_birth"].toString(),
-    });
     print("=========aa=========");
     print(_controllerDateOfBirth);
     print("=========aa=========");
@@ -238,47 +220,6 @@ class _EditPatientState extends State<EditPatient> {
                   _buildTextFieldUser(),
                   _buildTextFieldTags(),
                   _buildTextFieldTreatment(),
-                  multiFlag ? Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Wrap(
-                          children: imageFileList!.map((imageone){
-                            return Container(
-                                child:Card(
-                                  child: Container(
-                                    height: 150, width:150,
-                                    child: Image.file(File(imageone.path)),
-                                  ),
-                                )
-                            );
-                          }).toList()
-                      ),
-                  ): const Padding(
-                    padding: EdgeInsets.all(0.0),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center, //Center Row contents horizontally,
-                          //crossAxisAlignment: CrossAxisAlignment.center,//Center Row contents vertically,
-                          children: [FloatingActionButton.extended(
-                            onPressed: () {
-                              chooseImages();
-                            },
-                            label: Text(
-                                multiFlag ? "Change Image files" : "Open Image files"
-                            ),
-                          ),
-                            FloatingActionButton.extended(
-                              onPressed: () {
-                                //chooseCameras();
-                              },
-                              label: const Text(
-                                  "Take a picture"
-                              ),
-                            )
-                          ]
-                      )
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: FloatingActionButton.extended(
@@ -291,9 +232,6 @@ class _EditPatientState extends State<EditPatient> {
                       onPressed: () {
                         setState(() => _isLoading = true);
                         List<String> imageLists = [];
-                        for(var index=0; index < imageFileList!.length; index++){
-                          imageLists.add(imageFileList![index].path);
-                        }
                         List<dynamic> cTags = [];
                         for(var index=0; index < _controllerTags.getTags!.length; index++){
                           cTags.add({"name": _controllerTags.getTags![index]});
@@ -325,20 +263,18 @@ class _EditPatientState extends State<EditPatient> {
                           treatment: cTreatment,
                           image_lists: imageLists,
                         );
-                        _apiService.updatePatient(widget.patient.id, patientForm).then((response) {
+                        _apiService.updatePatient(jsonDecode(widget.patient)["id"], patientForm).then((response) {
                           if(response['status'] == "success"){
-                            _apiService.uploadImageFiles(imageFileList, response["id"]).then((response) {
-                              final snackBar = SnackBar(
-                                content: const Text('Update Patient Successfully!'),
-                                action: SnackBarAction(
-                                  label: 'Undo',
-                                  onPressed: () {
-                                    // Some code to undo the change.
-                                  },
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                            });
+                            final snackBar = SnackBar(
+                              content: const Text('Update Patient Successfully!'),
+                              action: SnackBarAction(
+                                label: 'Undo',
+                                onPressed: () {
+                                  // Some code to undo the change.
+                                },
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           }
                           if(response["status"] == "error"){
                             final snackBar = SnackBar(

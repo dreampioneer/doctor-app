@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:select_form_field/select_form_field.dart';
 
 class ProfileEdit extends StatefulWidget {
-  const ProfileEdit({Key? key, required this.title}) : super(key: key);
+  const ProfileEdit({Key? key, required this.title, required this.profile}) : super(key: key);
   final String title;
+  final dynamic profile;
   @override
   State<ProfileEdit> createState() => _ProfileEditState();
 }
@@ -59,14 +60,12 @@ class _ProfileEditState extends State<ProfileEdit> {
     _isFieldDepartmentValid = true;
     _isFieldGenderValid = true;
     _isFieldRoleValid = true;
-    _apiService.getProfile().then((response) => {
-      _controllerFirstName.text = response["data"]["first_name"],
-      _controllerLastName.text = response["data"]["last_name"],
-      _controllerEmail.text = response["data"]["email"],
-      _controllerDepartment.text = response["data"]["department_id"].toString(),
-      _controllerRole = response["data"]["role"],
-      _controllerGender = response["data"]["gender"],
-    });
+      _controllerFirstName.text =jsonDecode(widget.profile)["first_name"];
+      _controllerLastName.text = jsonDecode(widget.profile)["last_name"];
+      _controllerEmail.text = jsonDecode(widget.profile)["email"];
+      _controllerDepartment.text = jsonDecode(widget.profile)["department_id"].toString();
+      _controllerRole = jsonDecode(widget.profile)["role"];
+      _controllerGender = jsonDecode(widget.profile)["gender"];
     super.initState();
   }
   @override

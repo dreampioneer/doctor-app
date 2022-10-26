@@ -116,13 +116,15 @@ class _PatientState extends State<Patient> {
                   ),
                   onPressed: () =>
                   {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
+                    _apiService.getPatient(patient.id).then((response){
+                      Navigator.push(
+                        context,
+                       MaterialPageRoute(
                         builder: (context) =>
-                            EditPatient(title: 'Edit Patient', patient: patient),
-                      ),
-                    ),
+                        EditPatient(title: 'Edit Patient', patient: response),
+                        ),
+                      );
+                    }),
                   },
                 ),
                 IconButton(

@@ -98,7 +98,7 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getProfile() async {
+  Future<Object?> getProfile() async {
     token = await getToken();
     final response = await http.get(
       Uri.parse("$baseUrl/api/user/me/"),
@@ -107,12 +107,14 @@ class ApiService {
         'Authorization': token
       },
     );
-    Map<String, dynamic> result;
+    Map<String, String> result;
     if(response.statusCode == 200){
-      result = {'status': "success",'data': jsonDecode(response.body)};
+      return response.body;
+      result = {'status': "success",'data': response.body};
       return result;
     }else{
-      result = {'status': "error","message":jsonDecode(response.body)};
+      return null;
+      result = {'status': "error","message":response.body};
       return result;
     }
   }
@@ -177,7 +179,7 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getPatient(id)async{
+  Future<Object?> getPatient(id)async{
     token = await getToken();
     final response = await http.get(
       Uri.parse("$baseUrl/api/patients/patientss/$id"),
@@ -186,12 +188,13 @@ class ApiService {
         'Authorization': token
       },
     );
-    print(response.body);
     Map<String, dynamic> result;
     if(response.statusCode == 200){
+      return response.body;
       result = {'status': "success",'data': jsonDecode(response.body)};
       return result;
     }else{
+      return null;
       result = {'status': "error","message":jsonDecode(response.body)};
       return result;
     }
@@ -219,6 +222,8 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> updatePatient(id, PatientForm data)async{
+    print(id);
+    print(PatientFormToJson(data).runtimeType);
     token = await getToken();
     final response = await http.put(
       Uri.parse("$baseUrl/api/patients/patientss/$id/"),
@@ -234,6 +239,8 @@ class ApiService {
       print(jsonDecode(response.body)["id"]);
       return result;
     }else{
+      print(response.statusCode);
+      print(response.body);
       result = {'status': "error", 'message': jsonDecode(response.body)};
       return result;
     }
