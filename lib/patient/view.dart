@@ -248,7 +248,20 @@ class _ViewPatientState extends State<ViewPatient> {
                     height: 20,
                     thickness: 3,
                   ),
-                   Card(
+                  url == "" ?
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Text(
+                            "No Image",
+                            style: const TextStyle(fontSize: 25),
+                        ),
+                      )
+                    ],
+                  )
+                  : Card(
                     child: Container(
                       height: 150, width:150,
                       child: Image.network(url),
@@ -268,7 +281,7 @@ class _ViewPatientState extends State<ViewPatient> {
                             onPressed: () {
                               chooseCamera();
                             },
-                            label: Text(
+                            label: const Text(
                                 "Take a picture"
                             ),
                           ),]
