@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:doctor/api/api.dart';
 import 'package:doctor/model/patient.dart';
+import 'package:doctor/patient/patient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -254,12 +255,21 @@ class _AddPatientState extends State<AddPatient> {
                               Navigator.pop(
                                   context
                               );
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Patient(title: 'Patients'),
+                                ),
+                                ModalRoute.withName("/patients"),
+                              );
                               final snackBar = SnackBar(
                                 content: const Text('Add New Patient Successfully!'),
                                 action: SnackBarAction(
                                   label: 'Undo',
                                   onPressed: () {
                                     // Some code to undo the change.
+                                    setState(() {
+                                    });
                                   },
                                 ),
                               );

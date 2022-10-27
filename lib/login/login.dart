@@ -80,11 +80,13 @@ class _LoginState extends State<Login>{
                       String password = _controllerPassword.text;
                       _apiService.login(email, password).then((response) async {
                         if(response["status"] == "success"){
-                          Navigator.push(
+                          Navigator.pop(context);
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
                               builder: (context) => const Patient(title: 'Patients'),
                             ),
+                            ModalRoute.withName("/patients"),
                           );
                           final snackBar = SnackBar(
                             content: const Text('Login Successfully!'),

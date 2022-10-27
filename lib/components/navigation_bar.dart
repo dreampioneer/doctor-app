@@ -4,6 +4,7 @@
 
 import 'package:doctor/api/api.dart';
 import 'package:doctor/api/storage.dart';
+import 'package:doctor/login/login.dart';
 import 'package:doctor/patient/patient.dart';
 import 'package:doctor/profile/change_password.dart';
 import 'package:doctor/profile/profileEdit.dart';
@@ -28,14 +29,10 @@ class _NavbarState extends State<Navbar>{
 
   @override
   Widget build(BuildContext context) {
-    final drawerHeader = UserAccountsDrawerHeader(
-      accountName: Text(
-          "test"
-      ),
-      accountEmail: const Text(
-          "test"
-      ),
-      currentAccountPicture: const CircleAvatar(
+    const drawerHeader = UserAccountsDrawerHeader(
+      accountName: Text(""),
+      accountEmail: Text(""),
+      currentAccountPicture: CircleAvatar(
         child: FlutterLogo(size: 42.0),
       ),
     );
@@ -95,6 +92,14 @@ class _NavbarState extends State<Navbar>{
           ),
           leading: const Icon(Icons.favorite),
           onTap: () {
+            Navigator.pop(context);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Login(),
+              ),
+              ModalRoute.withName("/login"),
+            );
           },
         ),
       ],
