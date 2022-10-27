@@ -85,10 +85,10 @@ class _PatientState extends State<Patient> {
             {
               _apiService.getPatient(patient.id).then((response){
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ViewPatient(title: 'View Patient', patient: response),
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ViewPatient(title: 'View Patient', patient: response),
                   ),
                 );
               }),

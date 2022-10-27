@@ -1,4 +1,3 @@
-import 'package:doctor/api/storage.dart';
 import 'package:doctor/model/patient.dart';
 import 'package:doctor/model/profile.dart';
 import 'package:flutter/cupertino.dart';
@@ -85,9 +84,6 @@ class ApiService {
       Uri.parse("$baseUrl/api/user/email/verify/$email_token"),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
     );
-    print("==========================");
-    print(response.statusCode);
-    print("==========================");
     Map<String, dynamic> result;
     if(response.statusCode == 200){
       result = {'status': "success","data":jsonDecode(response.body)};
@@ -264,7 +260,7 @@ class ApiService {
     }
   }
 
-  Future<bool> uploadImageFiles(data, id)async {
+  Future<bool> uploadImageFiles(data, id) async {
     token = await getToken();
       final uri = Uri.parse("$baseUrl/api/patients/patientss/$id/upload-image/");
       for (var index = 0; index < data.length; index++) {
@@ -284,5 +280,53 @@ class ApiService {
         var response = await request.send();
       }
       return true;
+  }
+
+  Future<String> uploadImageFileVerify(data, id) async {
+    token = await getToken();
+    final uri = Uri.parse("$baseUrl/api/patients/patientss/$id/faceverify/");
+    var request = http.MultipartRequest('POST', uri);
+    var headers = {
+      'Authorization': token
+    };
+    request.headers.addAll(headers);
+    request.files.add(await http.MultipartFile(
+        'image',
+        Io.File(data.path).readAsBytes().asStream(),
+        Io.File(data.path).lengthSync(),
+        filename: data.path.split("/").last
+    ));
+    var response = await request.send();
+    final respStr = await response.stream.bytesToString();
+    print(respStr);
+    if(response.statusCode == 201){
+      return respStr;
+    }else{
+      return respStr;
+    }
+  }
+
+  Future<String?> getPatientImage(id) async {
+    token = await getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/api/patients/all/$id/get_images/"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization" : token,
+      },
+    );
+    print("============");
+    print(response.body);
+    Map<String, dynamic> result;
+    if(response.statusCode == 201){
+      return response.body;
+      // result = {'status': "success","data":jsonDecode(response.body)};
+      // return result;
+    }else{
+      return null;
+      // print(response.statusCode);
+      // result = {'status': "error","message":jsonDecode(response.body)};
+      // return result;
+    }
   }
 }

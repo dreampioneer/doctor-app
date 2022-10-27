@@ -1,24 +1,74 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:doctor/components/profile_pics.dart';
-import 'package:doctor/model/patient.dart';
-import 'package:doctor/profile/profileEdit.dart';
+import 'package:doctor/api/api.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+//import 'package:image/image.dart';
 
 class ViewPatient extends StatefulWidget {
   const ViewPatient({Key? key, required this.title, required this.patient}) : super(key: key);
 
   final String title;
   final dynamic patient;
+  //final String url;
 
   @override
   State<ViewPatient> createState() => _ViewPatientState();
 }
 
 class _ViewPatientState extends State<ViewPatient> {
+  String url  = "";
   late String description = "";
+  ApiService _apiService = ApiService();
+
+  final ImagePicker imgpicker = ImagePicker();
+  bool multiFlag = false;
+
+  chooseCamera() async {
+    final choosedimage = await imgpicker.pickImage(source: ImageSource.gallery);
+    if(choosedimage != null){
+      dynamic result = "";
+      SnackBar snackBar;
+      _apiService.uploadImageFileVerify(choosedimage, jsonDecode(widget.patient)["id"]).then((response) =>{
+        result = jsonDecode(response),
+        if(result["status"]){
+            snackBar = SnackBar(
+            content: const Text('Face Verify Successfully!'),
+            action: SnackBarAction(
+              label: 'Undo',
+                onPressed: () {
+                  // Some code to undo the change.
+                },
+              ),
+            ),
+            ScaffoldMessenger.of(context).showSnackBar(snackBar),
+          }else{
+          snackBar = SnackBar(
+            content: const Text('Face Verify Failed!'),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                // Some code to undo the change.
+              },
+            ),
+          ),
+          ScaffoldMessenger.of(context).showSnackBar(snackBar),
+        }
+      });
+      }
+    }
+
   @override
   void initState() {
+    _apiService.getPatientImage(jsonDecode(widget.patient)["id"]).then((response) => {
+       url = "http://10.10.11.226:8000" + jsonDecode(response!)["image_lists"][0]["image"],
+      setState(() {
+
+      }),
+    });
     super.initState();
   }
   @override
@@ -160,6 +210,37 @@ class _ViewPatientState extends State<ViewPatient> {
                     thickness: 3,
                   ),
                   _buildArrayText("Treatment", jsonDecode(widget.patient)["treatment"]),
+                  const Divider(
+                    color: Colors.grey,
+                    height: 20,
+                    thickness: 3,
+                  ),
+                   Card(
+                    child: Container(
+                      height: 150, width:150,
+                      child: Image.network(url),
+                    ),
+                  ),
+                  const Divider(
+                    color: Colors.grey,
+                    height: 20,
+                    thickness: 3,
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center, //Center Row contents horizontally,
+                          //crossAxisAlignment: CrossAxisAlignment.center,//Center Row contents vertically,
+                          children: [FloatingActionButton.extended(
+                            onPressed: () {
+                              chooseCamera();
+                            },
+                            label: Text(
+                                "Take a picture"
+                            ),
+                          ),]
+                      )
+                  ),
                   ]
                 ),
               )
@@ -193,7 +274,7 @@ class _ViewPatientState extends State<ViewPatient> {
     var ss = "";
     if(value.length != 0){
       for(var i = 0; i < value.length ; i++){
-        ss = ss + "," + value[i]["name"];
+        ss = ss + value[i]["name"] + ",";
       }
     }else{
       value = "N/A";

@@ -285,22 +285,6 @@ class _AddPatientState extends State<AddPatient> {
                 ],
               ),
             ),
-            // _isLoading
-            //     ? Stack(
-            //   children: [
-            //     const Opacity(
-            //       opacity: 0.3,
-            //       child: const ModalBarrier(
-            //         dismissible: false,
-            //         color: Colors.grey,
-            //       ),
-            //     ),
-            //     const Center(
-            //       child: const CircularProgressIndicator(),
-            //     ),
-            //   ],
-            // )
-            //     : Container(),
           ],
         ),
       ),

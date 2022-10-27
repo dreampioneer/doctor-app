@@ -5,6 +5,7 @@ import 'package:doctor/profile/profileEdit.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/api/api.dart';
 import 'package:doctor/signup/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/storage.dart';
 import '../main.dart';
@@ -26,7 +27,13 @@ class _LoginState extends State<Login>{
   final TextEditingController _controllerPassword = TextEditingController();
 
   ApiService _apiService = ApiService();
-  StorageService _storageService = StorageService();
+
+  @override
+  getToken() async{
+    final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    final SharedPreferences prefs = await _prefs;
+    return prefs.getString('token') ?? "";
+  }
 
   @override
   void initState() {
