@@ -177,9 +177,6 @@ class _EditPatientState extends State<EditPatient> {
 
   @override
   Widget build(BuildContext context){
-    print("=========aa=========");
-    print(_controllerDateOfBirth);
-    print("=========aa=========");
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),

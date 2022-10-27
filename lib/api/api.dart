@@ -209,7 +209,6 @@ class ApiService {
     Map<String, dynamic> result;
     if(response.statusCode == 201){
       result = {'status': "success", 'id': jsonDecode(response.body)["id"]};
-      print(jsonDecode(response.body)["id"]);
       return result;
     }else{
       result = {'status': "error", 'message': jsonDecode(response.body)};
@@ -218,8 +217,6 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> updatePatient(id, PatientForm data)async{
-    print(id);
-    print(PatientFormToJson(data).runtimeType);
     token = await getToken();
     final response = await http.put(
       Uri.parse("$baseUrl/api/patients/patientss/$id/"),
@@ -232,11 +229,8 @@ class ApiService {
     Map<String, dynamic> result;
     if(response.statusCode == 200){
       result = {'status': "success", 'id': jsonDecode(response.body)["id"]};
-      print(jsonDecode(response.body)["id"]);
       return result;
     }else{
-      print(response.statusCode);
-      print(response.body);
       result = {'status': "error", 'message': jsonDecode(response.body)};
       return result;
     }
@@ -251,8 +245,6 @@ class ApiService {
         'Authorization': token
       },
     );
-    debugPrint(jsonEncode(response.statusCode));
-    debugPrint(jsonEncode(response.body));
     if(response.statusCode == 204){
       return true;
     }else{
@@ -298,7 +290,6 @@ class ApiService {
     ));
     var response = await request.send();
     final respStr = await response.stream.bytesToString();
-    print(respStr);
     if(response.statusCode == 201){
       return respStr;
     }else{
@@ -315,8 +306,6 @@ class ApiService {
         "Authorization" : token,
       },
     );
-    print("============");
-    print(response.body);
     Map<String, dynamic> result;
     if(response.statusCode == 201){
       return response.body;

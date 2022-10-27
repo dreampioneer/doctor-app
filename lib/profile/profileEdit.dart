@@ -116,7 +116,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                               role: role
                           );
                           _apiService.saveProfile(profileForm).then((response) {
-                            print(jsonEncode(response["status"]));
                             if(response["status"] == "success"){
                               final snackBar = SnackBar(
                                 content: const Text('Save your profile Successfully!'),

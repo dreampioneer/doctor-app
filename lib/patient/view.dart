@@ -275,6 +275,7 @@ class _ViewPatientState extends State<ViewPatient> {
     if(value.length != 0){
       for(var i = 0; i < value.length ; i++){
         ss = ss + value[i]["name"] + ",";
+        ss = ss.substring(0, ss.length - 1);
       }
     }else{
       value = "N/A";

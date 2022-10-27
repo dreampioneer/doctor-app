@@ -629,7 +629,6 @@ class _AddPatientState extends State<AddPatient> {
                                       color: Colors.white),
                                 ),
                                 onTap: () {
-                                  print("$tag selected");
                                 },
                               ),
                               const SizedBox(width: 4.0),
@@ -730,7 +729,6 @@ class _AddPatientState extends State<AddPatient> {
                                       color: Colors.white),
                                 ),
                                 onTap: () {
-                                  print("$tag selected");
                                 },
                               ),
                               const SizedBox(width: 4.0),

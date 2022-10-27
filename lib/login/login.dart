@@ -80,7 +80,6 @@ class _LoginState extends State<Login>{
                       String password = _controllerPassword.text;
                       _apiService.login(email, password).then((response) async {
                         if(response["status"] == "success"){
-                          print(response["token"]);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

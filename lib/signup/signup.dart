@@ -156,9 +156,6 @@ class _SignupState extends State<Signup> {
                               if(response["status"] == "success" && response["data"]["status"]){
                                 _apiService.emailTokenVerify(response["data"]["email_token"]).then((response){
                                   if(response["status"] == "success" && response["data"]["status"]){
-                                    print("==========================");
-                                    print("Email Verify Successfully!");
-                                    print("==========================");
                                     final snackBar = SnackBar(
                                       content: const Text('Email Verify Successfully!'),
                                       action: SnackBarAction(
@@ -176,9 +173,6 @@ class _SignupState extends State<Signup> {
                                       ),
                                     );
                                   }else{
-                                    print("==========================");
-                                    print("Email Verify fail!");
-                                    print("==========================");
                                     final snackBar = SnackBar(
                                       content: const Text('Email Verify Fail!'),
                                       action: SnackBarAction(
