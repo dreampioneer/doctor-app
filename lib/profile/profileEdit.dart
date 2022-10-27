@@ -119,12 +119,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                             if(response["status"] == "success"){
                               final snackBar = SnackBar(
                                 content: const Text('Save your profile Successfully!'),
-                                action: SnackBarAction(
-                                  label: 'Undo',
-                                  onPressed: () {
-                                    // Some code to undo the change.
-                                  },
-                                ),
                               );
 
                               // Find the ScaffoldMessenger in the widget tree

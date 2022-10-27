@@ -20,6 +20,7 @@ class ViewPatient extends StatefulWidget {
 }
 
 class _ViewPatientState extends State<ViewPatient> {
+  bool _isLoading = false;
   String url  = "";
   late String description = "";
   ApiService _apiService = ApiService();
@@ -34,7 +35,13 @@ class _ViewPatientState extends State<ViewPatient> {
     if(choosedimage != null){
       GallerySaver.saveImage(choosedimage.path);
       SnackBar snackBar;
+      setState(() {
+        _isLoading = true;
+      });
       _apiService.uploadImageFileVerify(choosedimage, jsonDecode(widget.patient)["id"]).then((response) =>{
+        setState(() {
+          _isLoading = false;
+        }),
         dir = Directory(choosedimage.path),
         dir.deleteSync(recursive: true),
         result = jsonDecode(response),
@@ -52,12 +59,6 @@ class _ViewPatientState extends State<ViewPatient> {
           }else{
           snackBar = SnackBar(
             content: const Text('Face Verify Failed!'),
-            action: SnackBarAction(
-              label: 'Undo',
-              onPressed: () {
-                // Some code to undo the change.
-              },
-            ),
           ),
           ScaffoldMessenger.of(context).showSnackBar(snackBar),
         }
@@ -111,7 +112,17 @@ class _ViewPatientState extends State<ViewPatient> {
         title: Text(widget.title),
       ),
       body:Scrollbar(
-        child: ListView(
+        child: _isLoading ? Center(
+            child : Column(
+              mainAxisAlignment: MainAxisAlignment.center,//Center Column contents vertically,
+              children: const [
+                CircularProgressIndicator(),
+                Text(
+                  'Loading . . .',
+                ),
+              ],
+            )
+        ) : ListView(
           children: <Widget>[
               Container(
                 width: 10,
@@ -289,7 +300,7 @@ class _ViewPatientState extends State<ViewPatient> {
                   ),
                   ]
                 ),
-              )
+              ),
           ],
         )
       ),

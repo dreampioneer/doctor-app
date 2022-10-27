@@ -153,23 +153,11 @@ class _PatientState extends State<Patient> {
                                       setState(() {});
                                       final snackBar = SnackBar(
                                         content: const Text('Delete data Successfully!'),
-                                        action: SnackBarAction(
-                                          label: 'Undo',
-                                          onPressed: () {
-                                            // Some code to undo the change.
-                                          },
-                                        ),
                                       );
                                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                     } else {
                                       final snackBar = SnackBar(
                                         content: const Text('Fail!'),
-                                        action: SnackBarAction(
-                                          label: 'Undo',
-                                          onPressed: () {
-                                            // Some code to undo the change.
-                                          },
-                                        ),
                                       );
                                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                     }

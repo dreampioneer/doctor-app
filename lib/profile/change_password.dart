@@ -59,24 +59,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                             if(response["status"] == "success"){
                               final snackBar = SnackBar(
                                 content: const Text('Change Password Successfully!'),
-                                action: SnackBarAction(
-                                  label: 'Undo',
-                                  onPressed: () {
-                                    // Some code to undo the change.
-                                  },
-                                ),
                               );
                               ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             }
                             if(response["status"] == "error"){
                               final snackBar = SnackBar(
                                 content: const Text('Something went wrong!'),
-                                action: SnackBarAction(
-                                  label: 'Undo',
-                                  onPressed: () {
-                                    // Some code to undo the change.
-                                  },
-                                ),
                               );
                               ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             }

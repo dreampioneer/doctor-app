@@ -264,24 +264,12 @@ class _EditPatientState extends State<EditPatient> {
                           if(response['status'] == "success"){
                             final snackBar = SnackBar(
                               content: const Text('Update Patient Successfully!'),
-                              action: SnackBarAction(
-                                label: 'Undo',
-                                onPressed: () {
-                                  // Some code to undo the change.
-                                },
-                              ),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           }
                           if(response["status"] == "error"){
                             final snackBar = SnackBar(
                               content: const Text('Some thing went wrong!'),
-                              action: SnackBarAction(
-                                label: 'Undo',
-                                onPressed: () {
-                                  // Some code to undo the change.
-                                },
-                              ),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           }

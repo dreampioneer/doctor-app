@@ -158,12 +158,6 @@ class _SignupState extends State<Signup> {
                                   if(response["status"] == "success" && response["data"]["status"]){
                                     final snackBar = SnackBar(
                                       content: const Text('Email Verify Successfully!'),
-                                      action: SnackBarAction(
-                                        label: 'Undo',
-                                        onPressed: () {
-                                          // Some code to undo the change.
-                                        },
-                                      ),
                                     );
                                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                     Navigator.push(
@@ -175,12 +169,6 @@ class _SignupState extends State<Signup> {
                                   }else{
                                     final snackBar = SnackBar(
                                       content: const Text('Email Verify Fail!'),
-                                      action: SnackBarAction(
-                                        label: 'Undo',
-                                        onPressed: () {
-                                          // Some code to undo the change.
-                                        },
-                                      ),
                                     );
                                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                   }
@@ -188,24 +176,12 @@ class _SignupState extends State<Signup> {
                               }else{
                                 final snackBar = SnackBar(
                                   content: const Text('Email Verify Fail!'),
-                                  action: SnackBarAction(
-                                    label: 'Undo',
-                                    onPressed: () {
-                                      // Some code to undo the change.
-                                    },
-                                  ),
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               }
                             });
                             final snackBar = SnackBar(
                               content: const Text('Sign Up Successfully!'),
-                              action: SnackBarAction(
-                                label: 'Undo',
-                                onPressed: () {
-                                  // Some code to undo the change.
-                                },
-                              ),
                             );
 
                             // Find the ScaffoldMessenger in the widget tree
@@ -215,12 +191,6 @@ class _SignupState extends State<Signup> {
                           if(response["status"] == "error"){
                             final snackBar = SnackBar(
                               content: const Text('Your information is wrong!'),
-                              action: SnackBarAction(
-                                label: 'Undo',
-                                onPressed: () {
-                                  // Some code to undo the change.
-                                },
-                              ),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           }

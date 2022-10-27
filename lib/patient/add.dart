@@ -264,14 +264,6 @@ class _AddPatientState extends State<AddPatient> {
                               );
                               final snackBar = SnackBar(
                                 content: const Text('Add New Patient Successfully!'),
-                                action: SnackBarAction(
-                                  label: 'Undo',
-                                  onPressed: () {
-                                    // Some code to undo the change.
-                                    setState(() {
-                                    });
-                                  },
-                                ),
                               );
                               ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             });
@@ -279,12 +271,6 @@ class _AddPatientState extends State<AddPatient> {
                           if(response["status"] == "error"){
                             final snackBar = SnackBar(
                               content: const Text('Some thing went wrong!'),
-                              action: SnackBarAction(
-                                label: 'Undo',
-                                onPressed: () {
-                                  // Some code to undo the change.
-                                },
-                              ),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           }

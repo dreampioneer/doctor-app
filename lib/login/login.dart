@@ -90,12 +90,6 @@ class _LoginState extends State<Login>{
                           );
                           final snackBar = SnackBar(
                             content: const Text('Login Successfully!'),
-                            action: SnackBarAction(
-                              label: 'Undo',
-                              onPressed: () {
-                                // Some code to undo the change.
-                              },
-                            ),
                           );
 
                           // Find the ScaffoldMessenger in the widget tree
@@ -105,12 +99,6 @@ class _LoginState extends State<Login>{
                         if(response["status"] == "error"){
                           final snackBar = SnackBar(
                             content: const Text('Your credentials is wrong!'),
-                            action: SnackBarAction(
-                              label: 'Undo',
-                              onPressed: () {
-                                // Some code to undo the change.
-                              },
-                            ),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
