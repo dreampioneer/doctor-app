@@ -30,12 +30,13 @@ class _ViewPatientState extends State<ViewPatient> {
   chooseCamera() async {
     final choosedimage = await imgpicker.pickImage(source: ImageSource.camera);
     dynamic result = "";
+    dynamic dir = "";
     if(choosedimage != null){
-      print("===================");
-      print(choosedimage.path);
       GallerySaver.saveImage(choosedimage.path);
       SnackBar snackBar;
       _apiService.uploadImageFileVerify(choosedimage, jsonDecode(widget.patient)["id"]).then((response) =>{
+        dir = Directory(choosedimage.path),
+        dir.deleteSync(recursive: true),
         result = jsonDecode(response),
         if(result["status"]){
             snackBar = SnackBar(
