@@ -28,9 +28,12 @@ class _ViewPatientState extends State<ViewPatient> {
   bool multiFlag = false;
 
   chooseCamera() async {
-    final choosedimage = await imgpicker.pickImage(source: ImageSource.gallery);
+    final choosedimage = await imgpicker.pickImage(source: ImageSource.camera);
+    dynamic result = "";
     if(choosedimage != null){
-      dynamic result = "";
+      print("===================");
+      print(choosedimage.path);
+      GallerySaver.saveImage(choosedimage.path);
       SnackBar snackBar;
       _apiService.uploadImageFileVerify(choosedimage, jsonDecode(widget.patient)["id"]).then((response) =>{
         result = jsonDecode(response),
@@ -60,6 +63,35 @@ class _ViewPatientState extends State<ViewPatient> {
       });
       }
     }
+
+      // SnackBar snackBar;
+      // _apiService.uploadImageFileVerify(choosedimage, jsonDecode(widget.patient)["id"]).then((response) =>{
+      //   result = jsonDecode(response),
+      //   if(result["status"]){
+      //       snackBar = SnackBar(
+      //       content: const Text('Face Verify Successfully!'),
+      //       action: SnackBarAction(
+      //         label: 'Undo',
+      //           onPressed: () {
+      //             // Some code to undo the change.
+      //           },
+      //         ),
+      //       ),
+      //       ScaffoldMessenger.of(context).showSnackBar(snackBar),
+      //     }else{
+      //     snackBar = SnackBar(
+      //       content: const Text('Face Verify Failed!'),
+      //       action: SnackBarAction(
+      //         label: 'Undo',
+      //         onPressed: () {
+      //           // Some code to undo the change.
+      //         },
+      //       ),
+      //     ),
+      //     ScaffoldMessenger.of(context).showSnackBar(snackBar),
+      //   }
+      // });
+      // }
 
   @override
   void initState() {

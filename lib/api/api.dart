@@ -275,6 +275,7 @@ class ApiService {
   }
 
   Future<String> uploadImageFileVerify(data, id) async {
+    print("====uploadImageFileVerify=====");
     token = await getToken();
     final uri = Uri.parse("$baseUrl/api/patients/patientss/$id/faceverify/");
     var request = http.MultipartRequest('POST', uri);
