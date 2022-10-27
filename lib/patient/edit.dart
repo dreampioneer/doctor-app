@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:doctor/api/api.dart';
 import 'package:doctor/model/patient.dart';
+import 'package:doctor/patient/patient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -179,6 +180,17 @@ class _EditPatientState extends State<EditPatient> {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Patient(title: "Patients"),
+                ),
+              );
+            }
+        ),
         title: Text(widget.title),
       ),
       body: _isLoading ? Center(
@@ -273,6 +285,7 @@ class _EditPatientState extends State<EditPatient> {
                         _apiService.updatePatient(jsonDecode(widget.patient)["id"], patientForm).then((response) {
                           setState(() => _isLoading = false);
                           if(response['status'] == "success"){
+                            setState(() => _isLoading = false);
                             final snackBar = SnackBar(
                               content: const Text('Update Patient Successfully!'),
                             );

@@ -8,6 +8,7 @@ import 'package:doctor/signup/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/storage.dart';
+import '../home/home.dart';
 import '../main.dart';
 import '../model/storage_item.dart';
 import '../storeage/storeage.dart';
@@ -91,9 +92,6 @@ class _LoginState extends State<Login>{
                       setState(() => _isLoading = true);
                       String email = _controllerEmail.text;
                       String password = _controllerPassword.text;
-                      setState(() {
-                        _isLoading = true;
-                      });
                       _apiService.login(email, password).then((response) async {
                         setState(() {
                           _isLoading = false;
@@ -103,7 +101,7 @@ class _LoginState extends State<Login>{
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Patient(title: 'Patients'),
+                              builder: (context) => const Home(title: "Home"),
                             ),
                             ModalRoute.withName("/patients"),
                           );
@@ -135,7 +133,6 @@ class _LoginState extends State<Login>{
                       ),
                     ),
                     onPressed: () {
-                      setState(() => _isLoading = true);
                       Navigator.push(
                         context,
                         MaterialPageRoute(

@@ -44,10 +44,6 @@ class _SignupState extends State<Signup> {
       'label': 'Female',
     },
     {
-      'value': 'Transgender',
-      'label': 'Transgender',
-    },
-    {
       'value': 'Non-binary/non-conforming',
       'label': 'Non-binary/non-conforming',
     },

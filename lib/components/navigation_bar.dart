@@ -4,6 +4,7 @@
 
 import 'package:doctor/api/api.dart';
 import 'package:doctor/api/storage.dart';
+import 'package:doctor/home/home.dart';
 import 'package:doctor/login/login.dart';
 import 'package:doctor/patient/patient.dart';
 import 'package:doctor/profile/change_password.dart';
@@ -20,7 +21,7 @@ class Navbar extends StatefulWidget {
 
 class _NavbarState extends State<Navbar>{
   String token = "";
-  ApiService _apiService = ApiService();
+  final ApiService _apiService = ApiService();
 
   @override
   void initState(){
@@ -39,6 +40,21 @@ class _NavbarState extends State<Navbar>{
     final drawerItems = ListView(
       children: [
         drawerHeader,
+        ListTile(
+          title: const Text(
+              "Home"
+          ),
+          selected: widget.title == "Home",
+          leading: const Icon(Icons.home),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Home(title: "Home"),
+              ),
+            );
+          },
+        ),
         ListTile(
           title: const Text(
               "Patients"
