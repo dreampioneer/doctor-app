@@ -95,7 +95,17 @@ class _SignupState extends State<Signup> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? Center(
+          child : Column(
+            mainAxisAlignment: MainAxisAlignment.center,//Center Column contents vertically,
+            children: const [
+              CircularProgressIndicator(),
+              Text(
+                'Loading . . .',
+              ),
+            ],
+          )
+      ) : SingleChildScrollView(
         child: Stack(
           children: <Widget>[
             Padding(
@@ -155,6 +165,7 @@ class _SignupState extends State<Signup> {
                             _apiService.emailVerify(email).then((response){
                               if(response["status"] == "success" && response["data"]["status"]){
                                 _apiService.emailTokenVerify(response["data"]["email_token"]).then((response){
+                                  setState(() => _isLoading = false);
                                   if(response["status"] == "success" && response["data"]["status"]){
                                     final snackBar = SnackBar(
                                       content: const Text('Email Verify Successfully!'),
@@ -221,22 +232,6 @@ class _SignupState extends State<Signup> {
                 ],
               ),
             ),
-            // _isLoading
-            //     ? Stack(
-            //   children: [
-            //     const Opacity(
-            //       opacity: 0.3,
-            //       child: const ModalBarrier(
-            //         dismissible: false,
-            //         color: Colors.grey,
-            //       ),
-            //     ),
-            //     const Center(
-            //       child: const CircularProgressIndicator(),
-            //     ),
-            //   ],
-            // )
-            //     : Container(),
           ],
         ),
       ),

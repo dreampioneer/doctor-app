@@ -137,7 +137,17 @@ class _AddPatientState extends State<AddPatient> {
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
-        child: Stack(
+        child: _isLoading ? Center(
+            child : Column(
+              mainAxisAlignment: MainAxisAlignment.center,//Center Column contents vertically,
+              children: const [
+                CircularProgressIndicator(),
+                Text(
+                  'Loading . . .',
+                ),
+              ],
+            )
+        ) :  Stack(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -252,6 +262,7 @@ class _AddPatientState extends State<AddPatient> {
                         _apiService.addPatient(patientForm).then((response) {
                           if(response['status'] == "success"){
                             _apiService.uploadImageFiles(imageFileList, response["id"]).then((response) {
+                              setState(() => _isLoading = false);
                               Navigator.pop(
                                   context
                               );

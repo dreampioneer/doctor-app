@@ -47,13 +47,7 @@ class _ViewPatientState extends State<ViewPatient> {
         result = jsonDecode(response),
         if(result["status"]){
             snackBar = SnackBar(
-            content: const Text('Face Verify Successfully!'),
-            action: SnackBarAction(
-              label: 'Undo',
-                onPressed: () {
-                  // Some code to undo the change.
-                },
-              ),
+              content: const Text('Face Verify Successfully!'),
             ),
             ScaffoldMessenger.of(context).showSnackBar(snackBar),
           }else{

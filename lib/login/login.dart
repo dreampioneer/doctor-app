@@ -37,6 +37,9 @@ class _LoginState extends State<Login>{
 
   @override
   void initState() {
+    setState(() {
+      _isLoading = false;
+    });
     super.initState();
   }
 
@@ -51,7 +54,17 @@ class _LoginState extends State<Login>{
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Stack(
+      body:  _isLoading ? Center(
+          child : Column(
+            mainAxisAlignment: MainAxisAlignment.center,//Center Column contents vertically,
+            children: const [
+              CircularProgressIndicator(),
+              Text(
+                'Loading . . .',
+              ),
+            ],
+          )
+      ) :  Stack(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -78,7 +91,13 @@ class _LoginState extends State<Login>{
                       setState(() => _isLoading = true);
                       String email = _controllerEmail.text;
                       String password = _controllerPassword.text;
+                      setState(() {
+                        _isLoading = true;
+                      });
                       _apiService.login(email, password).then((response) async {
+                        setState(() {
+                          _isLoading = false;
+                        });
                         if(response["status"] == "success"){
                           Navigator.pop(context);
                           Navigator.pushAndRemoveUntil(

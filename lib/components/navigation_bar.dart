@@ -44,7 +44,7 @@ class _NavbarState extends State<Navbar>{
               "Patients"
           ),
           selected: widget.title == "Patients",
-          leading: const Icon(Icons.comment),
+          leading: const Icon(Icons.supervisor_account),
           onTap: () {
             Navigator.push(
               context,
@@ -59,7 +59,7 @@ class _NavbarState extends State<Navbar>{
               "About me"
           ),
           selected: widget.title == "About me",
-          leading: const Icon(Icons.favorite),
+          leading: const Icon(Icons.person_pin),
           onTap: () {
             _apiService.getProfile().then((response) {
               Navigator.push(
@@ -76,7 +76,7 @@ class _NavbarState extends State<Navbar>{
               "Change Password"
           ),
           selected: widget.title == "Change Password",
-          leading: const Icon(Icons.favorite),
+          leading: const Icon(Icons.password),
           onTap: () {
             Navigator.push(
               context,
@@ -90,7 +90,7 @@ class _NavbarState extends State<Navbar>{
           title: const Text(
               "Logout"
           ),
-          leading: const Icon(Icons.favorite),
+          leading: const Icon(Icons.logout),
           onTap: () {
             Navigator.pop(context);
             Navigator.pushAndRemoveUntil(

@@ -181,7 +181,17 @@ class _EditPatientState extends State<EditPatient> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: SingleChildScrollView(
+      body: _isLoading ? Center(
+          child : Column(
+            mainAxisAlignment: MainAxisAlignment.center,//Center Column contents vertically,
+            children: const [
+              CircularProgressIndicator(),
+              Text(
+                'Loading . . .',
+              ),
+            ],
+          )
+      ) :  SingleChildScrollView(
         child: Stack(
           children: <Widget>[
             Padding(
@@ -261,6 +271,7 @@ class _EditPatientState extends State<EditPatient> {
                           image_lists: imageLists,
                         );
                         _apiService.updatePatient(jsonDecode(widget.patient)["id"], patientForm).then((response) {
+                          setState(() => _isLoading = false);
                           if(response['status'] == "success"){
                             final snackBar = SnackBar(
                               content: const Text('Update Patient Successfully!'),

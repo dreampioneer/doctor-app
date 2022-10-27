@@ -10,6 +10,7 @@ class ChangePassword extends StatefulWidget {
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
+  bool _isLoading = false;
   String _messageOldPassword = "";
   String _messageNewPassword = "";
   String _messageReNewPassword = "";
@@ -31,7 +32,17 @@ class _ChangePasswordState extends State<ChangePassword> {
               (widget.title)
           ),
         ),
-        body: SingleChildScrollView(
+        body:  _isLoading ? Center(
+            child : Column(
+              mainAxisAlignment: MainAxisAlignment.center,//Center Column contents vertically,
+              children: const [
+                CircularProgressIndicator(),
+                Text(
+                  'Loading . . .',
+                ),
+              ],
+            )
+        ) : SingleChildScrollView(
           child: Stack(
             children: <Widget>[
               Padding(
@@ -52,10 +63,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                           ),
                         ),
                         onPressed: () {
+                          setState(() {
+                            _isLoading = true;
+                          });
                           String oldPassword = _controllerOldPassword.text;
                           String newPassword = _controllerNewPassword.text;
                           String newPasswordConfirm = _controllerReNewPassword.text;
                           _apiService.changePassword(oldPassword, newPassword, newPasswordConfirm).then((response) {
+                            setState(() {
+                              _isLoading = false;
+                            });
                             if(response["status"] == "success"){
                               final snackBar = SnackBar(
                                 content: const Text('Change Password Successfully!'),

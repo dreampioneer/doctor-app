@@ -76,7 +76,17 @@ class _ProfileEditState extends State<ProfileEdit> {
             (widget.title)
         ),
       ),
-        body: SingleChildScrollView(
+        body: _isLoading ? Center(
+            child : Column(
+              mainAxisAlignment: MainAxisAlignment.center,//Center Column contents vertically,
+              children: const [
+                CircularProgressIndicator(),
+                Text(
+                  'Loading . . .',
+                ),
+              ],
+            )
+        ) :  SingleChildScrollView(
           child: Stack(
             children: <Widget>[
               Padding(
@@ -116,6 +126,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               role: role
                           );
                           _apiService.saveProfile(profileForm).then((response) {
+                            setState(() => _isLoading = false);
                             if(response["status"] == "success"){
                               final snackBar = SnackBar(
                                 content: const Text('Save your profile Successfully!'),
