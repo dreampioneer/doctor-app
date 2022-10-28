@@ -61,11 +61,12 @@ class _HomeState extends State<Home>{
             ),
           SliderButton(
             action: () {
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const Patient(title: "Patients", type: "only"),
                 ),
+                ModalRoute.withName("/Patients"),
               );
             },
             label: const Text(
@@ -87,11 +88,12 @@ class _HomeState extends State<Home>{
           ),
           SliderButton(
             action: () {
-              Navigator.push(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const Patient(title: "Patients", type: "all"),
                 ),
+                ModalRoute.withName("/AllPatients"),
               );
             },
             label: const Text(

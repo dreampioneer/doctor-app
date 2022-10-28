@@ -85,102 +85,104 @@ class _PatientState extends State<Patient> {
       child: ListView.builder(
       itemBuilder: (context, index) {
           PatientForm patient = patients[index];
-          return ListTile(
-            onTap: () =>
-            {
-              _apiService.getPatient(patient.id).then((response){
-                Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ViewPatient(title: 'View Patient', patient: response, type:widget.type),
-                  ),
-                );
-              }),
-            },
-            leading: CircleAvatar(
-              backgroundColor: Colors.blueAccent,
-              foregroundColor: const Color(0xffffffff),
-              child: Text(
-                  patient.first_name.substring(0, 1).toUpperCase() +
-                  patient.last_name.substring(0, 1).toUpperCase()
+          return Card(
+            child: ListTile(
+              onTap: () =>
+              {
+                _apiService.getPatient(patient.id).then((response){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ViewPatient(title: 'View Patient', patient: response, type:widget.type),
+                    ),
+                  );
+                }),
+              },
+              leading: CircleAvatar(
+                backgroundColor: Colors.blueAccent,
+                foregroundColor: const Color(0xffffffff),
+                child: Text(
+                    patient.first_name.substring(0, 1).toUpperCase() +
+                        patient.last_name.substring(0, 1).toUpperCase()
+                ),
               ),
-            ),
-            title: Text(
-              patient.first_name + " " + patient.last_name,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 20.0),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.border_color,
-                    size: 20.0,
-                    color: Colors.brown[900],
+              title: Text(
+                patient.first_name + " " + patient.last_name,
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 20.0),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.border_color,
+                      size: 20.0,
+                      color: Colors.brown[900],
+                    ),
+                    onPressed: () =>
+                    {
+                      _apiService.getPatient(patient.id).then((response){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                EditPatient(title: 'Edit Patient', patient: response, type:widget.type),
+                          ),
+                        );
+                      }),
+                    },
                   ),
-                  onPressed: () =>
-                  {
-                    _apiService.getPatient(patient.id).then((response){
-                      Navigator.push(
-                        context,
-                       MaterialPageRoute(
-                        builder: (context) =>
-                        EditPatient(title: 'Edit Patient', patient: response, type:widget.type),
-                        ),
-                      );
-                    }),
-                  },
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.delete_outline,
-                    size: 20.0,
-                    color: Colors.brown[900],
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete_outline,
+                      size: 20.0,
+                      color: Colors.brown[900],
+                    ),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text("Warning"),
+                              content: const Text("Are you sure want to delete this data"),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text("Yes"),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    _apiService.deletePatient(patient.id).then((response) {
+                                      if (response) {
+                                        setState(() {});
+                                        final snackBar = SnackBar(
+                                          content: const Text('Delete data Successfully!'),
+                                        );
+                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                      } else {
+                                        final snackBar = SnackBar(
+                                          content: const Text('Fail!'),
+                                        );
+                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                      }
+                                    });
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text("No"),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                )
+                              ],
+                            );
+                          });
+                    },
                   ),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text("Warning"),
-                            content: const Text("Are you sure want to delete this data"),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text("Yes"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  _apiService.deletePatient(patient.id).then((response) {
-                                    if (response) {
-                                      setState(() {});
-                                      final snackBar = SnackBar(
-                                        content: const Text('Delete data Successfully!'),
-                                      );
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                    } else {
-                                      final snackBar = SnackBar(
-                                        content: const Text('Fail!'),
-                                      );
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                    }
-                                  });
-                                },
-                              ),
-                              TextButton(
-                                child: const Text("No"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              )
-                            ],
-                          );
-                        });
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
@@ -196,34 +198,36 @@ class _PatientState extends State<Patient> {
       child: ListView.builder(
         itemBuilder: (context, index) {
           PatientForm patient = patients[index];
-          return ListTile(
-            onTap: () =>
-            {
-              _apiService.getAllPatient(patient.id).then((response){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                      ViewPatient(title: 'View Patient', patient: response, type:widget.type),
-                    ),
-                );
-              }
-            )},
-            leading: CircleAvatar(
-              backgroundColor: Colors.blueAccent,
-              foregroundColor: const Color(0xffffffff),
-              child: Text(
-                  patient.first_name.substring(0, 1).toUpperCase() +
-                      patient.last_name.substring(0, 1).toUpperCase()
+          return Card(
+              child: ListTile(
+                onTap: () =>
+                {
+                  _apiService.getAllPatient(patient.id).then((response){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ViewPatient(title: 'View Patient', patient: response, type:widget.type),
+                      ),
+                    );
+                  }
+                  )},
+                leading: CircleAvatar(
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: const Color(0xffffffff),
+                  child: Text(
+                      patient.first_name.substring(0, 1).toUpperCase() +
+                          patient.last_name.substring(0, 1).toUpperCase()
+                  ),
+                ),
+                title: Text(
+                  patient.first_name + " " + patient.last_name,
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 20.0),
+                ),
               ),
-            ),
-            title: Text(
-              patient.first_name + " " + patient.last_name,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 20.0),
-            ),
           );
         },
         itemCount: patients.length,
