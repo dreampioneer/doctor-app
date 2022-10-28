@@ -9,7 +9,7 @@ import 'dart:io' as Io;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  final String baseUrl = "http://10.10.11.226:8000";
+  final String baseUrl = "http://10.10.11.224:8000";
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late String token = "";
 
