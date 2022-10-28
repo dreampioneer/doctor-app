@@ -39,7 +39,13 @@ class _NavbarState extends State<Navbar>{
     );
     final drawerItems = ListView(
       children: [
-        drawerHeader,
+        Container(
+          height: 15,
+        ),
+        const CircleAvatar(
+          child: FlutterLogo(size: 70.0),
+            minRadius: 50
+        ),
         ListTile(
           title: const Text(
               "Home"

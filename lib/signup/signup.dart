@@ -24,6 +24,7 @@ class _SignupState extends State<Signup> {
   bool _isFieldDepartmentValid = false;
   bool _isFieldGenderValid = false;
   bool _isFieldRoleValid = false;
+  bool _isFieldKeyValid = false;
 
   final TextEditingController _controllerFirstName = TextEditingController();
   final TextEditingController _controllerLastName = TextEditingController();
@@ -31,6 +32,7 @@ class _SignupState extends State<Signup> {
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerRePassword = TextEditingController();
   final TextEditingController _controllerDepartment = TextEditingController();
+  final TextEditingController _controllerKey = TextEditingController();
   String _controllerGender = "";
   String _controllerRole = "";
 
@@ -157,46 +159,50 @@ class _SignupState extends State<Signup> {
                           role: role
                         );
                         _apiService.signup(signupForm).then((response) {
+                          setState(() => _isLoading = false);
                           if(response["status"] == "success"){
-                            setState(() => _isLoading = false);
-                            final snackBar = SnackBar(
-                              content: const Text('Sign Up Successfully!'),
+                            var snackBar = const SnackBar(
+                              content: Text('Sign Up Successfully!'),
                             );
-                            _apiService.emailVerify(email).then((response){
-                              if(response["status"] == "success" && response["data"]["status"]){
-                                showAlertDialog(BuildContext context) {
-
-                                  // set up the button
-                                  Widget okButton = TextButton(
-                                    child: Text("OK"),
-                                    onPressed: () { },
-                                  );
-
-                                  // set up the AlertDialog
-                                  AlertDialog alert = AlertDialog(
-                                    title: Text("Verify your Email."),
-                                    content: Text("Token: "),
-                                    actions: [
-                                      okButton,
-                                    ],
-                                  );
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return alert;
-                                    },
-                                  );
-                                }
-                              }else{
-                                final snackBar = SnackBar(
-                                  content: const Text('Get Email Token Fail!'),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              }
-                            });
-                            // Find the ScaffoldMessenger in the widget tree
-                            // and use it to show a SnackBar.
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text('Verify Your Email'),
+                                content: _buildTextFieldKey(),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                    {
+                                      setState(() => _isLoading = true),
+                                      print(_controllerKey.text),
+                                      _apiService.emailKeyVerify(_controllerEmail.text,_controllerKey.text).then((response) => {
+                                        setState(() => _isLoading = false),
+                                        if(response){
+                                          snackBar = const SnackBar(
+                                            content: Text('Congratulation your email is verified!'),
+                                          ),
+                                          ScaffoldMessenger.of(context).showSnackBar(snackBar),
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                            builder: (context) => Login(),
+                                            ),
+                                            ModalRoute.withName("/login"),
+                                          ),
+                                        }else{
+                                          snackBar = const SnackBar(
+                                            content: Text('Verify is failed!'),
+                                          ),
+                                          ScaffoldMessenger.of(context).showSnackBar(snackBar),
+                                        }
+                                      }),
+                                    },
+                                    child: const Text('Verify'),
+                                  ),
+                                ],
+                              ),
+                            );
                           }
                           if(response["status"] == "error"){
                             final snackBar = SnackBar(
@@ -270,6 +276,25 @@ class _SignupState extends State<Signup> {
         bool isFieldValid = value.trim().isNotEmpty;
         if (isFieldValid != _isFieldLastNameValid) {
           setState(() => _isFieldLastNameValid = isFieldValid);
+        }
+      },
+    );
+  }
+
+  Widget _buildTextFieldKey() {
+    return TextField(
+      controller: _controllerKey,
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        labelText: "key",
+        errorText: _isFieldKeyValid
+            ? null
+            : "Key is required",
+      ),
+      onChanged: (value) {
+        bool isFieldValid = value.trim().isNotEmpty;
+        if (isFieldValid != _isFieldKeyValid) {
+          setState(() => _isFieldKeyValid = isFieldValid);
         }
       },
     );
@@ -393,4 +418,5 @@ class _SignupState extends State<Signup> {
       onSaved: (val) => print(val),
     );
   }
+
 }

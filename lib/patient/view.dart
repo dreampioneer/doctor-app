@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:doctor/api/api.dart';
+import 'package:doctor/components/profile_item.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,11 +10,11 @@ import 'package:path_provider/path_provider.dart';
 //import 'package:image/image.dart';
 
 class ViewPatient extends StatefulWidget {
-  const ViewPatient({Key? key, required this.title, required this.patient}) : super(key: key);
+  const ViewPatient({Key? key, required this.title, required this.patient, required this.type}) : super(key: key);
 
   final String title;
   final dynamic patient;
-  //final String url;
+  final String type;
 
   @override
   State<ViewPatient> createState() => _ViewPatientState();
@@ -25,8 +26,9 @@ class _ViewPatientState extends State<ViewPatient> {
   late String description = "";
   ApiService _apiService = ApiService();
 
-  final ImagePicker imgpicker = ImagePicker();
   bool multiFlag = false;
+  List<XFile>? imageFileList = [];
+  final ImagePicker imgpicker = ImagePicker();
 
   chooseCamera() async {
     final choosedimage = await imgpicker.pickImage(source: ImageSource.camera);
@@ -46,13 +48,13 @@ class _ViewPatientState extends State<ViewPatient> {
         dir.deleteSync(recursive: true),
         result = jsonDecode(response),
         if(result["status"]){
-            snackBar = SnackBar(
-              content: const Text('Face Verify Successfully!'),
+            snackBar = const SnackBar(
+              content: Text('Face Verify Successfully!'),
             ),
             ScaffoldMessenger.of(context).showSnackBar(snackBar),
           }else{
-          snackBar = SnackBar(
-            content: const Text('Face Verify Failed!'),
+          snackBar = const SnackBar(
+            content: Text('Face Verify Failed!'),
           ),
           ScaffoldMessenger.of(context).showSnackBar(snackBar),
         }
@@ -60,48 +62,63 @@ class _ViewPatientState extends State<ViewPatient> {
       }
     }
 
-      // SnackBar snackBar;
-      // _apiService.uploadImageFileVerify(choosedimage, jsonDecode(widget.patient)["id"]).then((response) =>{
-      //   result = jsonDecode(response),
-      //   if(result["status"]){
-      //       snackBar = SnackBar(
-      //       content: const Text('Face Verify Successfully!'),
-      //       action: SnackBarAction(
-      //         label: 'Undo',
-      //           onPressed: () {
-      //             // Some code to undo the change.
-      //           },
-      //         ),
-      //       ),
-      //       ScaffoldMessenger.of(context).showSnackBar(snackBar),
-      //     }else{
-      //     snackBar = SnackBar(
-      //       content: const Text('Face Verify Failed!'),
-      //       action: SnackBarAction(
-      //         label: 'Undo',
-      //         onPressed: () {
-      //           // Some code to undo the change.
-      //         },
-      //       ),
-      //     ),
-      //     ScaffoldMessenger.of(context).showSnackBar(snackBar),
-      //   }
-      // });
-      // }
+  void chooseImages() async {
+    final choosedimages = await imgpicker.pickMultiImage();
+    if (choosedimages != null) {
+      imageFileList = choosedimages;
+      setState((){
+        multiFlag = true;
+      });
+    }
+  }
+
+  void uploadImages() async {
+    setState(() {
+      _isLoading = true;
+    });
+    SnackBar snackBar;
+    await _apiService.uploadImageFiles(imageFileList, jsonDecode(widget.patient)["id"]).then((response) => {
+      setState(() {
+        multiFlag = false;
+        _isLoading = false;
+      }),
+      snackBar = const SnackBar(
+        content: Text('Uploading files successfully!'),
+       ),
+      ScaffoldMessenger.of(context).showSnackBar(snackBar),
+      setState(() {
+      }),
+    });
+  }
+
 
   @override
   void initState() {
-    print(jsonEncode(widget.patient));
-    _apiService.getPatientImage(jsonDecode(widget.patient)["id"]).then((response) => {
-       url = "http://10.10.11.226:8000" + jsonDecode(response!)["image_lists"][0]["image"],
-      setState(() {
-
-      }),
-    });
+    // _apiService.getPatientImage(jsonDecode(widget.patient)["id"]).then((response) => {
+    //    url = "http://10.10.11.226:8000" + jsonDecode(response!)["image_lists"][0]["image"],
+    //   setState(() {
+    //
+    //   }),
+    // });
+    print(jsonDecode(widget.patient)["id"]);
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
+
+    String changeString(value){
+        var ss = "";
+        if(value.length != 0){
+          for(var i = 0; i < value.length ; i++){
+            ss = ss + value[i]["name"] + ",";
+            ss = ss.substring(0, ss.length - 1);
+          }
+        }else{
+          ss = "N/A";
+        }
+        return ss;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -128,7 +145,7 @@ class _ViewPatientState extends State<ViewPatient> {
                   width: double.infinity,
                   child: CircleAvatar(
                       minRadius: 45,
-                      backgroundColor: const Color(0xff764abc),
+                      backgroundColor: Colors.blueAccent,
                       foregroundColor: const Color(0xffffffff),
                       child: Text(
                         jsonDecode(widget.patient)["first_name"].substring(0, 1).toUpperCase() +
@@ -141,202 +158,167 @@ class _ViewPatientState extends State<ViewPatient> {
                 width: 10,
                 height: 20,
               ),
+            widget.type == "only" ? Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, //Center Row contents horizontally,
+                      //crossAxisAlignment: CrossAxisAlignment.center,//Center Row contents vertically,
+                      children: [FloatingActionButton.extended(
+                        onPressed: () {
+                          chooseCamera();
+                        },
+                        label: const Text(
+                            "Take a picture"
+                        ),
+                      ),]
+                  )
+              ) : Container(),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0, right:10.0),
                 child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  _buildText("First Name", jsonDecode(widget.patient)["first_name"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                    title: "First Name",
+                    icon: Icons.account_box_outlined,
+                    value: jsonDecode(widget.patient)["first_name"] ?? "N/A"
                   ),
-                  _buildText("Last Name", jsonDecode(widget.patient)["last_name"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Last Name",
+                      icon: Icons.account_box_outlined,
+                      value: jsonDecode(widget.patient)["last_name"] ?? "N/A"
                   ),
-                  _buildText("Age", jsonDecode(widget.patient)["age"].toString()),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Age",
+                      icon: Icons.data_usage_outlined,
+                      value: jsonDecode(widget.patient)["age"].toString()
                   ),
-                  _buildText("Med List", jsonDecode(widget.patient)["med_list"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Med List",
+                      icon: Icons.auto_fix_high,
+                      value: jsonDecode(widget.patient)["med_list"] ?? "N/A"
                   ),
-                  _buildText("Phone Number", jsonDecode(widget.patient)["phone_number"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Phone Number",
+                      icon: Icons.phone,
+                      value: jsonDecode(widget.patient)["phone_number"] ?? "N/A"
                   ),
-                  _buildText("Date of Birth", jsonDecode(widget.patient)["date_of_birth"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Date of Birth",
+                      icon: Icons.date_range,
+                      value: jsonDecode(widget.patient)["date_of_birth"] ?? "N/A"
                   ),
-                  _buildText("Street Address", jsonDecode(widget.patient)["street_address"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Street Address",
+                      icon: Icons.terrain,
+                      value: jsonDecode(widget.patient)["street_address"] ?? "N/A"
                   ),
-                  _buildText("City Address", jsonDecode(widget.patient)["city_address"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "City Address",
+                      icon: Icons.terrain,
+                      value: jsonDecode(widget.patient)["city_address"] ?? "N/A"
                   ),
-                  _buildText("Zipcode Address", jsonDecode(widget.patient)["zipcode_address"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Zipcode Address",
+                      icon: Icons.terrain,
+                      value: jsonDecode(widget.patient)["zipcode_address"] ?? "N/A"
                   ),
-                  _buildText("Sata Address", jsonDecode(widget.patient)["state_address"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "State Address",
+                      icon: Icons.terrain,
+                      value: jsonDecode(widget.patient)["state_address"] ?? "N/A"
                   ),
-                  _buildText("Link", jsonDecode(widget.patient)["link"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Link",
+                      icon: Icons.link,
+                      value: jsonDecode(widget.patient)["link"] ?? "N/A"
                   ),
-                  _buildText("Emergency Contact Name", jsonDecode(widget.patient)["emergency_contact_name"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Emergency Contact Name",
+                      icon: Icons.account_box_outlined,
+                      value: jsonDecode(widget.patient)["emergency_contact_name"] ?? "N/A"
                   ),
-                  _buildText("Emergency Phone Number", jsonDecode(widget.patient)["emergency_phone_number"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Emergency Phone Number",
+                      icon: Icons.phone,
+                      value: jsonDecode(widget.patient)["emergency_phone_number"] ?? "N/A"
                   ),
-                  _buildText("Relationship", jsonDecode(widget.patient)["relationship"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Relationship",
+                      icon: Icons.link,
+                      value: jsonDecode(widget.patient)["relationship"] ?? "N/A"
                   ),
-                  _buildText("Gender", jsonDecode(widget.patient)["gender"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Gender",
+                      icon: Icons.transgender,
+                      value: jsonDecode(widget.patient)["Gender"] ?? "N/A"
                   ),
-                  _buildBoolText("Is In Hospital", jsonDecode(widget.patient)["is_in_hospital"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
+                  ProfileItem(
+                      title: "Is In Hospital",
+                      icon: Icons.local_hospital,
+                      value: jsonDecode(widget.patient)["Is In Hospital"] ?? "N/A"
                   ),
-                  _buildArrayText("Tags", jsonDecode(widget.patient)["tags"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
-                  ),
-                  _buildArrayText("Treatment", jsonDecode(widget.patient)["treatment"] ?? "N/A"),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
-                  ),
-                  url == "" ?
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Text(
-                            "No Image",
-                            style: const TextStyle(fontSize: 25),
-                        ),
-                      )
-                    ],
-                  )
-                  : Card(
-                    child: Container(
-                      height: 150, width:150,
-                      child: Image.network(url),
-                    ),
-                  ),
-                  const Divider(
-                    color: Colors.grey,
-                    height: 20,
-                    thickness: 3,
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center, //Center Row contents horizontally,
-                          //crossAxisAlignment: CrossAxisAlignment.center,//Center Row contents vertically,
-                          children: [FloatingActionButton.extended(
-                            onPressed: () {
-                              chooseCamera();
-                            },
-                            label: const Text(
-                                "Take a picture"
-                            ),
-                          ),]
-                      )
-                  ),
+                  widget.type == "only" ? ProfileItem(
+                      title: "Tags",
+                      icon: Icons.apps_outlined,
+                      value: changeString(jsonDecode(widget.patient)["tags"])
+                  ) : Container(),
+                  widget.type == "only" ? ProfileItem(
+                      title: "Treatment",
+                      icon: Icons.apps_outlined,
+                      value: changeString(jsonDecode(widget.patient)["treatment"])
+                  ) : Container(),
                   ]
                 ),
               ),
+            multiFlag ? Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Wrap(
+                  children: imageFileList!.map((imageone){
+                    return Container(
+                        child:Card(
+                          child: Container(
+                            height: 150, width:150,
+                            child: Image.file(File(imageone.path)),
+                          ),
+                        )
+                    );
+                  }).toList()
+              ),
+            ): const Padding(
+              padding: EdgeInsets.all(0.0),
+            ),
+            widget.type == "only" ? Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center, //Center Row contents horizontally,
+                    //crossAxisAlignment: CrossAxisAlignment.center,//Center Row contents vertically,
+                    children: [
+                      FloatingActionButton.extended(
+                        onPressed: () {
+                          chooseImages();
+                        },
+                        label: Text(
+                            multiFlag ? "Change Image files" : "Open Image files"
+                        ),
+                      ),
+                      multiFlag ? FloatingActionButton.extended(
+                        onPressed: () {
+                          uploadImages();
+                        },
+                        label: const Text(
+                            "Upload Image files"
+                        ),
+                      ) : Container()
+                    ]
+                )
+            ) : Container(),
           ],
         )
       ),
     );
   }
 
-  Widget _buildText(label,value) {
-    value = value ?? "";
-    if(value != ""){
-      value = value;
-    }else{
-      value = "N/A";
-    }
-    return Text(
-      label + " : " + value,
-      style: const TextStyle(fontSize: 25),
-    );
-  }
-
-  Widget _buildBoolText(label,value) {
-    value = value ? "Yes" : "No";
-    return Text(
-      label + " : " + value,
-      style: const TextStyle(fontSize: 25),
-    );
-  }
-  Widget _buildArrayText(label, value) {
-    var ss = "";
-    if(value.length != 0){
-      for(var i = 0; i < value.length ; i++){
-        ss = ss + value[i]["name"] + ",";
-        ss = ss.substring(0, ss.length - 1);
-      }
-    }else{
-      value = "N/A";
-    }
-    return Text(
-      label + " : " + ss,
-      style: const TextStyle(fontSize: 25),
-    );
-  }
 }
 
 

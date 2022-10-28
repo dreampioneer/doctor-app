@@ -105,8 +105,8 @@ class _LoginState extends State<Login>{
                             ),
                             ModalRoute.withName("/patients"),
                           );
-                          final snackBar = SnackBar(
-                            content: const Text('Login Successfully!'),
+                          final snackBar = const SnackBar(
+                            content: Text('Login Successfully!'),
                           );
 
                           // Find the ScaffoldMessenger in the widget tree
@@ -114,8 +114,8 @@ class _LoginState extends State<Login>{
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                         if(response["status"] == "error"){
-                          final snackBar = SnackBar(
-                            content: const Text('Your credentials is wrong!'),
+                          final snackBar = const SnackBar(
+                            content: Text('Your credentials is wrong!'),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }

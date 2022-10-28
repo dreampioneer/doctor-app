@@ -52,6 +52,7 @@ class ApiService {
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: SignupFormToJson(data),
     );
+    print(response.body);
     Map<String, dynamic> result;
     if(response.statusCode == 201){
       result = {'status': "success"};
@@ -79,18 +80,23 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> emailTokenVerify(email_token) async {
-    final response = await http.get(
-      Uri.parse("$baseUrl/api/user/email/verify/$email_token"),
+  Future<bool> emailKeyVerify(email, key) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/api/user/email/verify/"),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'key': key,
+      }),
     );
-    Map<String, dynamic> result;
-    if(response.statusCode == 200){
-      result = {'status': "success","data":jsonDecode(response.body)};
-      return result;
+    print("AAAAAAAAAAA");
+    print(response.statusCode);
+    print(jsonDecode(response.body)["status"]);
+    print("AAAAAAAAAAA");
+    if(response.statusCode == 201){
+      return jsonDecode(response.body)["status"];
     }else{
-      result = {'status': "error","message":jsonDecode(response.body)};
-      return result;
+      return jsonDecode(response.body)["status"];
     }
   }
 
@@ -290,8 +296,9 @@ class ApiService {
   }
 
   Future<bool> uploadImageFiles(data, id) async {
+    print("AAAAAAA");
     token = await getToken();
-      final uri = Uri.parse("$baseUrl/api/patients/patientss/$id/upload-image/");
+      final uri = Uri.parse("$baseUrl/api/patients/all/$id/upload-image/");
       for (var index = 0; index < data.length; index++) {
         var request = http.MultipartRequest('POST', uri);
         var headers = {
@@ -309,12 +316,13 @@ class ApiService {
         var response = await request.send();
       }
       return true;
+    print("AAAAAAA");
   }
 
   Future<String> uploadImageFileVerify(data, id) async {
     print("====uploadImageFileVerify=====");
     token = await getToken();
-    final uri = Uri.parse("$baseUrl/api/patients/patientss/$id/faceverify/");
+    final uri = Uri.parse("$baseUrl/api/patients/all/$id/faceverify/");
     var request = http.MultipartRequest('POST', uri);
     var headers = {
       'Authorization': token

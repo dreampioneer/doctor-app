@@ -6,10 +6,12 @@ class ProfileItem extends StatelessWidget {
     Key? key,
     required this.title,
     this.icon,
+    required this.value
   }) : super(key: key);
 
   final String title;
   final IconData? icon;
+  final String value;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,8 +22,8 @@ class ProfileItem extends StatelessWidget {
               border: Border.all(width: 2, color: Colors.white),
               borderRadius: BorderRadius.circular(40),
               gradient: const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
+                  begin: Alignment.centerRight,
+                  end: Alignment.centerLeft,
                   colors: [
                     Colors.white,
                     Colors.blueAccent,
@@ -36,7 +38,7 @@ class ProfileItem extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        title + ": ",
+                        title + ": " + value,
                         textAlign: TextAlign.left,
                         style: TextStyle(fontSize: 18),
                       ),

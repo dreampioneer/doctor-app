@@ -93,13 +93,13 @@ class _PatientState extends State<Patient> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      ViewPatient(title: 'View Patient', patient: response),
+                      ViewPatient(title: 'View Patient', patient: response, type:widget.type),
                   ),
                 );
               }),
             },
             leading: CircleAvatar(
-              backgroundColor: const Color(0xff764abc),
+              backgroundColor: Colors.blueAccent,
               foregroundColor: const Color(0xffffffff),
               child: Text(
                   patient.first_name.substring(0, 1).toUpperCase() +
@@ -204,13 +204,13 @@ class _PatientState extends State<Patient> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                      ViewPatient(title: 'View Patient', patient: response),
+                      ViewPatient(title: 'View Patient', patient: response, type:widget.type),
                     ),
                 );
               }
             )},
             leading: CircleAvatar(
-              backgroundColor: const Color(0xff764abc),
+              backgroundColor: Colors.blueAccent,
               foregroundColor: const Color(0xffffffff),
               child: Text(
                   patient.first_name.substring(0, 1).toUpperCase() +
