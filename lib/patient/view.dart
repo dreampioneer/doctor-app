@@ -91,6 +91,7 @@ class _ViewPatientState extends State<ViewPatient> {
 
   @override
   void initState() {
+    print(jsonEncode(widget.patient));
     _apiService.getPatientImage(jsonDecode(widget.patient)["id"]).then((response) => {
        url = "http://10.10.11.226:8000" + jsonDecode(response!)["image_lists"][0]["image"],
       setState(() {
@@ -145,13 +146,13 @@ class _ViewPatientState extends State<ViewPatient> {
                 child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  _buildText("First Name", jsonDecode(widget.patient)["first_name"]),
+                  _buildText("First Name", jsonDecode(widget.patient)["first_name"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Last Name", jsonDecode(widget.patient)["last_name"]),
+                  _buildText("Last Name", jsonDecode(widget.patient)["last_name"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
@@ -163,91 +164,91 @@ class _ViewPatientState extends State<ViewPatient> {
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Med List", jsonDecode(widget.patient)["med_list"]),
+                  _buildText("Med List", jsonDecode(widget.patient)["med_list"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Phone Number", jsonDecode(widget.patient)["phone_number"]),
+                  _buildText("Phone Number", jsonDecode(widget.patient)["phone_number"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Date of Birth", jsonDecode(widget.patient)["date_of_birth"]),
+                  _buildText("Date of Birth", jsonDecode(widget.patient)["date_of_birth"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Street Address", jsonDecode(widget.patient)["street_address"]),
+                  _buildText("Street Address", jsonDecode(widget.patient)["street_address"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("City Address", jsonDecode(widget.patient)["city_address"]),
+                  _buildText("City Address", jsonDecode(widget.patient)["city_address"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Zipcode Address", jsonDecode(widget.patient)["zipcode_address"]),
+                  _buildText("Zipcode Address", jsonDecode(widget.patient)["zipcode_address"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Sata Address", jsonDecode(widget.patient)["state_address"]),
+                  _buildText("Sata Address", jsonDecode(widget.patient)["state_address"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Link", jsonDecode(widget.patient)["link"]),
+                  _buildText("Link", jsonDecode(widget.patient)["link"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Emergency Contact Name", jsonDecode(widget.patient)["emergency_contact_name"]),
+                  _buildText("Emergency Contact Name", jsonDecode(widget.patient)["emergency_contact_name"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Emergency Phone Number", jsonDecode(widget.patient)["emergency_phone_number"]),
+                  _buildText("Emergency Phone Number", jsonDecode(widget.patient)["emergency_phone_number"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Relationship", jsonDecode(widget.patient)["relationship"]),
+                  _buildText("Relationship", jsonDecode(widget.patient)["relationship"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildText("Gender", jsonDecode(widget.patient)["gender"]),
+                  _buildText("Gender", jsonDecode(widget.patient)["gender"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildBoolText("Is In Hospital", jsonDecode(widget.patient)["is_in_hospital"]),
+                  _buildBoolText("Is In Hospital", jsonDecode(widget.patient)["is_in_hospital"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildArrayText("Tags", jsonDecode(widget.patient)["tags"]),
+                  _buildArrayText("Tags", jsonDecode(widget.patient)["tags"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,
                     thickness: 3,
                   ),
-                  _buildArrayText("Treatment", jsonDecode(widget.patient)["treatment"]),
+                  _buildArrayText("Treatment", jsonDecode(widget.patient)["treatment"] ?? "N/A"),
                   const Divider(
                     color: Colors.grey,
                     height: 20,

@@ -12,10 +12,10 @@ import 'package:textfield_tags/textfield_tags.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 
 class AddPatient extends StatefulWidget {
-  const AddPatient({Key? key, required this.title}) : super(key: key);
+  const AddPatient({Key? key, required this.title, required this.type }) : super(key: key);
 
   final String title;
-
+  final String type;
   @override
   State<AddPatient> createState() => _AddPatientState();
 }
@@ -269,7 +269,7 @@ class _AddPatientState extends State<AddPatient> {
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const Patient(title: 'Patients'),
+                                  builder: (context) => Patient(title: 'Patients', type: widget.type),
                                 ),
                                 ModalRoute.withName("/patients"),
                               );

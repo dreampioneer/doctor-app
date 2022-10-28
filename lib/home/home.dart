@@ -1,9 +1,10 @@
+import 'dart:convert';
+
 import 'package:doctor/components/navigation_bar.dart';
+import 'package:doctor/patient/patient.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/api/api.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../api/storage.dart';
+import 'package:slider_button/slider_button.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -16,9 +17,20 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home>{
   bool _isLoading = false;
   ApiService _apiService = ApiService();
+  String first_name = "";
+  String last_name = "";
+  String gender = "";
+  String mrorms = "";
 
   @override
   void initState() {
+    _apiService.getProfile().then((response) {
+      first_name = jsonDecode(response.toString())["first_name"];
+      last_name = jsonDecode(response.toString())["last_name"];
+      gender = jsonDecode(response.toString())["gender"];
+      mrorms = gender == "Male" ? "Mr." : "Ms.";
+      setState(() {});
+    });
     setState(() {
       _isLoading = false;
     });
@@ -36,18 +48,68 @@ class _HomeState extends State<Home>{
           style: const TextStyle(color: Colors.white),
         ),
       ),
-      body:  Stack(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const <Widget>[
-                Text("Hello"),
-              ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Hi $mrorms $first_name $last_name!',
+              style: Theme.of(context).textTheme.headline3,
+            ),
+            Container(
+              height: 60,
+            ),
+          SliderButton(
+            action: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Patient(title: "Patients", type: "only"),
+                ),
+              );
+            },
+            label: const Text(
+              "Slide to view your patients",
+              style: TextStyle(
+                  color: Color(0xff4a4a4a), fontWeight: FontWeight.w500, fontSize: 17),
+            ),
+            icon: const Text(
+              "x",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 30,
+              ),
             ),
           ),
-        ],
+          Container(
+            height: 10,
+          ),
+          SliderButton(
+            action: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Patient(title: "Patients", type: "all"),
+                ),
+              );
+            },
+            label: const Text(
+              "Slide to view all patients",
+              style: TextStyle(
+                  color: Color(0xff4a4a4a), fontWeight: FontWeight.w500, fontSize: 17),
+            ),
+            icon: const Text(
+              "x",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 30,
+              ),
+            ),
+          )
+          ],
+        )
       ),
       drawer:  const Navbar(title: "Home")
     );

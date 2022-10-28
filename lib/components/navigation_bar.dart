@@ -50,7 +50,7 @@ class _NavbarState extends State<Navbar>{
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Home(title: "Home"),
+                builder: (context) => Home(title: "Home"),
               ),
             );
           },
@@ -65,7 +65,22 @@ class _NavbarState extends State<Navbar>{
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Patient(title: "Patients"),
+                builder: (context) => Patient(title: "Patients", type: "only"),
+              ),
+            );
+          },
+        ),
+        ListTile(
+          title: const Text(
+              "All Patients"
+          ),
+          selected: widget.title == "All Patients",
+          leading: const Icon(Icons.supervisor_account),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Patient(title: "All Patients", type: "all"),
               ),
             );
           },

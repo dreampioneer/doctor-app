@@ -158,39 +158,42 @@ class _SignupState extends State<Signup> {
                         );
                         _apiService.signup(signupForm).then((response) {
                           if(response["status"] == "success"){
+                            setState(() => _isLoading = false);
+                            final snackBar = SnackBar(
+                              content: const Text('Sign Up Successfully!'),
+                            );
                             _apiService.emailVerify(email).then((response){
                               if(response["status"] == "success" && response["data"]["status"]){
-                                _apiService.emailTokenVerify(response["data"]["email_token"]).then((response){
-                                  setState(() => _isLoading = false);
-                                  if(response["status"] == "success" && response["data"]["status"]){
-                                    final snackBar = SnackBar(
-                                      content: const Text('Email Verify Successfully!'),
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Login(),
-                                      ),
-                                    );
-                                  }else{
-                                    final snackBar = SnackBar(
-                                      content: const Text('Email Verify Fail!'),
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                  }
-                                });
+                                showAlertDialog(BuildContext context) {
+
+                                  // set up the button
+                                  Widget okButton = TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () { },
+                                  );
+
+                                  // set up the AlertDialog
+                                  AlertDialog alert = AlertDialog(
+                                    title: Text("Verify your Email."),
+                                    content: Text("Token: "),
+                                    actions: [
+                                      okButton,
+                                    ],
+                                  );
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return alert;
+                                    },
+                                  );
+                                }
                               }else{
                                 final snackBar = SnackBar(
-                                  content: const Text('Email Verify Fail!'),
+                                  content: const Text('Get Email Token Fail!'),
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               }
                             });
-                            final snackBar = SnackBar(
-                              content: const Text('Sign Up Successfully!'),
-                            );
-
                             // Find the ScaffoldMessenger in the widget tree
                             // and use it to show a SnackBar.
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);

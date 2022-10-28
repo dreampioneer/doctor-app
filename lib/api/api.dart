@@ -175,10 +175,47 @@ class ApiService {
     }
   }
 
+  Future<List<PatientForm>?> getAllPatients() async{
+    token = await getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/api/patients/all/"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      },
+    );
+    if(response.statusCode == 200){
+      return PatientFormFromJson(response.body);
+    }else{
+      return null;
+    }
+  }
+
   Future<Object?> getPatient(id)async{
     token = await getToken();
     final response = await http.get(
       Uri.parse("$baseUrl/api/patients/patientss/$id"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token
+      },
+    );
+    Map<String, dynamic> result;
+    if(response.statusCode == 200){
+      return response.body;
+      result = {'status': "success",'data': jsonDecode(response.body)};
+      return result;
+    }else{
+      return null;
+      result = {'status': "error","message":jsonDecode(response.body)};
+      return result;
+    }
+  }
+
+  Future<Object?> getAllPatient(id)async{
+    token = await getToken();
+    final response = await http.get(
+      Uri.parse("$baseUrl/api/patients/all/$id/"),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': token

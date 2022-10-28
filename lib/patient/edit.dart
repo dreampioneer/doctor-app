@@ -11,9 +11,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class EditPatient extends StatefulWidget {
-  const EditPatient({Key? key, required this.title, required this.patient}) : super(key: key);
+  const EditPatient({Key? key, required this.title, required this.patient, required this.type}) : super(key: key);
 
   final String title;
+  final String type;
   final dynamic patient;
 
   @override
@@ -186,7 +187,7 @@ class _EditPatientState extends State<EditPatient> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Patient(title: "Patients"),
+                  builder: (context) => Patient(title: "Patients", type: widget.type),
                 ),
               );
             }

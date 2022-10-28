@@ -101,7 +101,7 @@ class _LoginState extends State<Login>{
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Home(title: "Home"),
+                              builder: (context) => const Home(title: 'Home'),
                             ),
                             ModalRoute.withName("/patients"),
                           );
