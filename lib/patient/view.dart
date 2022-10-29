@@ -62,6 +62,29 @@ class _ViewPatientState extends State<ViewPatient> {
       }
     }
 
+    uploadCamera() async{
+      final choosedimage = await imgpicker.pickImage(source: ImageSource.camera);
+      dynamic result = "";
+      dynamic dir = "";
+      if(choosedimage != null) {
+        GallerySaver.saveImage(choosedimage.path);
+        SnackBar snackBar;
+        setState(() {
+          _isLoading = true;
+        });
+        await _apiService.uploadImageFiles([choosedimage], jsonDecode(widget.patient)["id"]).then((response) => {
+          setState(() {
+            multiFlag = false;
+            _isLoading = false;
+          }),
+          snackBar = const SnackBar(
+            content: Text('Uploading files successfully!'),
+          ),
+          ScaffoldMessenger.of(context).showSnackBar(snackBar),
+        });
+      }
+    }
+
   void chooseImages() async {
     final choosedimages = await imgpicker.pickMultiImage();
     if (choosedimages != null) {
@@ -309,7 +332,15 @@ class _ViewPatientState extends State<ViewPatient> {
                         label: const Text(
                             "Upload Image files"
                         ),
-                      ) : Container()
+                      ) : Container(),
+                      FloatingActionButton.extended(
+                        onPressed: () {
+                          uploadCamera();
+                        },
+                        label: Text(
+                            "Upload from camera"
+                        ),
+                      ),
                     ]
                 )
             ) : Container(),

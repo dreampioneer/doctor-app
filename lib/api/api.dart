@@ -9,7 +9,7 @@ import 'dart:io' as Io;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  final String baseUrl = "http://10.10.11.224:8000";
+  final String baseUrl = "http://192.168.1.4:8000";
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late String token = "";
 
@@ -322,7 +322,7 @@ class ApiService {
   Future<String> uploadImageFileVerify(data, id) async {
     print("====uploadImageFileVerify=====");
     token = await getToken();
-    final uri = Uri.parse("$baseUrl/api/patients/all/$id/faceverify/");
+    final uri = Uri.parse("$baseUrl/api/patients/patientss/$id/faceverify/");
     var request = http.MultipartRequest('POST', uri);
     var headers = {
       'Authorization': token

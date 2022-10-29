@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 class AddPatient extends StatefulWidget {
   const AddPatient({Key? key, required this.title, required this.type }) : super(key: key);
@@ -94,8 +95,10 @@ class _AddPatientState extends State<AddPatient> {
 
   //Open Image
   List<XFile>? imageFileList = [];
+  List<XFile>? imageCFileList = [];
   final ImagePicker imgpicker = ImagePicker();
   bool multiFlag = false;
+  bool cameraFlag = false;
 
   void chooseImages() async {
     final choosedimages = await imgpicker.pickMultiImage();
@@ -103,6 +106,19 @@ class _AddPatientState extends State<AddPatient> {
       imageFileList = choosedimages;
       setState((){
         multiFlag = true;
+      });
+    }
+  }
+
+  uploadCamera() async{
+    final choosedimage = await imgpicker.pickImage(source: ImageSource.camera);
+    dynamic result = "";
+    dynamic dir = "";
+    if(choosedimage != null) {
+      imageCFileList = [choosedimage];
+      GallerySaver.saveImage(choosedimage.path);
+      setState(() {
+        cameraFlag = true;
       });
     }
   }
@@ -210,8 +226,42 @@ class _AddPatientState extends State<AddPatient> {
                             label: Text(
                                 multiFlag ? "Change Image files" : "Open Image files"
                             ),
-                          ),]
+                          )]
                       )
+                  ),
+                  multiFlag ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Wrap(
+                        children: imageCFileList!.map((imageone){
+                          return Container(
+                              child:Card(
+                                child: Container(
+                                  height: 150, width:150,
+                                  child: Image.file(File(imageone.path)),
+                                ),
+                              )
+                          );
+                        }).toList()
+                    ),
+                  ): const Padding(
+                    padding: EdgeInsets.all(0.0),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, //Center Row contents horizontally,
+                      //crossAxisAlignment: CrossAxisAlignment.center,//Center Row contents vertically,
+                      children: [
+                        FloatingActionButton.extended(
+                          onPressed: () {
+                            uploadCamera();
+                          },
+                          label: Text(
+                              "Upload from camera"
+                          ),
+                        ),
+                      ]
+                    )
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
@@ -260,28 +310,33 @@ class _AddPatientState extends State<AddPatient> {
                           image_lists: imageLists,
                         );
                         _apiService.addPatient(patientForm).then((response) {
+                          print(response);
                           if(response['status'] == "success"){
-                            _apiService.uploadImageFiles(imageFileList, response["id"]).then((response) {
-                              setState(() => _isLoading = false);
-                              Navigator.pop(
-                                  context
-                              );
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Patient(title: 'Patients', type: widget.type),
-                                ),
-                                ModalRoute.withName("/patients"),
-                              );
-                              final snackBar = SnackBar(
-                                content: const Text('Add New Patient Successfully!'),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            var id = response["id"];
+                            _apiService.uploadImageFiles(imageFileList, id).then((response) {
+                              _apiService.uploadImageFiles(imageCFileList, id).then((response) {
+                                setState(() => _isLoading = false);
+                                Navigator.pop(
+                                    context
+                                );
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Patient(title: 'Patients', type: widget.type),
+                                  ),
+                                  ModalRoute.withName("/patients"),
+                                );
+                                final snackBar = SnackBar(
+                                  content: const Text('Add New Patient Successfully!'),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              });
                             });
                           }
                           if(response["status"] == "error"){
+                            setState(() => _isLoading = false);
                             final snackBar = SnackBar(
-                              content: const Text('Some thing went wrong!'),
+                              content: Text(jsonEncode(response["message"])),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           }

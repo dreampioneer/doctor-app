@@ -285,6 +285,7 @@ class _EditPatientState extends State<EditPatient> {
                         );
                         _apiService.updatePatient(jsonDecode(widget.patient)["id"], patientForm).then((response) {
                           setState(() => _isLoading = false);
+                          print(response);
                           if(response['status'] == "success"){
                             setState(() => _isLoading = false);
                             final snackBar = SnackBar(

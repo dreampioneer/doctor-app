@@ -3,6 +3,8 @@ import 'package:doctor/profile/profileEdit.dart';
 import 'package:flutter/material.dart';
 import 'package:doctor/login/login.dart';
 
+import 'home/home.dart';
+
 void main() {
   runApp(const MyApp());
 }
